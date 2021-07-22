@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 
 val kotlinVersion = "1.5.21"
@@ -41,13 +42,6 @@ kotlin {
             }
         }
 
-        val commonTest by getting {
-            dependencies {
-                implementation(kotlin("test-common"))
-                implementation(kotlin("test-annotations-common"))
-            }
-        }
-
         val jvmMain by getting {
             dependencies {
                 implementation("io.ktor:ktor-serialization:$ktorVersion")
@@ -88,7 +82,7 @@ tasks.getByName<Jar>("jvmJar") {
 }
 
 tasks {
-    withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    withType<KotlinCompile> {
         kotlinOptions {
             jvmTarget = "1.8"
         }
