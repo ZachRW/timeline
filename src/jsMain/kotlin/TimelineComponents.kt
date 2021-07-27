@@ -7,6 +7,7 @@ interface TimelineComponent {
 
 class Timeline(
     private val ctx: CanvasRenderingContext2D,
+    private val data: TimelineData,
     dim: Vector2D,
     titleConfig: TextConfig,
     xAxisConfig: TextConfig,
@@ -105,7 +106,7 @@ class Title(
 
 class Body(
     val pos: Vector2D,
-    dim: Vector2D // TODO cause update
+    dim: Vector2D
 ) : TimelineComponent {
     var viewX = 0.0
         set(value) {

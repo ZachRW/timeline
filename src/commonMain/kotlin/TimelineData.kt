@@ -10,13 +10,6 @@ data class TimelineData(
 }
 
 @Serializable
-data class Date(
-    val year: Int,
-    val month: Int,
-    val day: Int
-)
-
-@Serializable
 data class Series(
     val timeRanges: List<TimeRange>,
     val events: List<Event>
@@ -32,5 +25,12 @@ data class TimeRange(
 @Serializable
 data class Event(
     val name: String,
-    val time: Date
+    val date: Date
+)
+
+@Serializable
+data class Date(
+    val year: Int,
+    val month: Int,
+    val day: Int
 )

@@ -1,5 +1,5 @@
 import kotlinx.browser.document
-import kotlinx.browser.window
+import kotlinx.coroutines.DelicateCoroutinesApi
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 
@@ -8,13 +8,14 @@ private object Main : InputListener {
     private val canvas: HTMLCanvasElement
 
     init {
-        console.log("initializing")
+        console.log("Initializing")
 
         canvas = document.getElementById("timelineCanvas") as HTMLCanvasElement
         val ctx = canvas.getContext("2d") as CanvasRenderingContext2D
 
         timeline = Timeline(
             ctx,
+            timelineData,
             dim = Vector2D(canvas.width, canvas.height),
             titleConfig = TextConfig(
                 text = "Example Title",
@@ -34,9 +35,7 @@ private object Main : InputListener {
     }
 
     fun start() {
-        console.log("starting")
-//        console.log(require("../../../../processedResources/js/main/test.txt"))
-//        console.log(require("./test.txt"))
+        console.log("Starting")
         console.log(jsonClient)
         timeline.draw()
     }
@@ -58,5 +57,3 @@ private object Main : InputListener {
 fun main() {
     Main.start()
 }
-
-external val require: dynamic

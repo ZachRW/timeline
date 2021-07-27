@@ -12,4 +12,6 @@ val jsonClient = HttpClient {
     install(JsonFeature) { serializer = KotlinxSerializer() }
 }
 
+suspend fun getTimelineData(): TimelineData =
+    jsonClient.get(endpoint + TimelineData.path)
 
