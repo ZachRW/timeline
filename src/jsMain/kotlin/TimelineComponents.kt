@@ -34,7 +34,7 @@ class Timeline(
     var scale: Double
         get() = body.scale
         set(value) {
-            body.scale = scale
+            body.scale = value
         }
 
     init {

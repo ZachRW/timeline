@@ -1,9 +1,10 @@
 import kotlinx.browser.document
-import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
 
-private object Main : InputListener {
+private class TimelineHandler(timelineData: TimelineData) : InputListener {
     private val timeline: Timeline
     private val canvas: HTMLCanvasElement
 
@@ -55,5 +56,10 @@ private object Main : InputListener {
 }
 
 fun main() {
-    Main.start()
+    MainScope().launch {
+        console.log("Launching MainScope coroutine")
+        val timelineData = getTimelineData()
+
+        TimelineHandler(timelineData).start()
+    }
 }
