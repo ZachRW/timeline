@@ -59,6 +59,7 @@ fun main() {
     MainScope().launch {
         console.log("Launching MainScope coroutine")
         val timelineData = getTimelineData()
+        console.log(timelineData)
 
         TimelineHandler(timelineData).start()
     }

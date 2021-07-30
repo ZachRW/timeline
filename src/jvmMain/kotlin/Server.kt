@@ -9,10 +9,20 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import java.io.File
+import java.io.FileNotFoundException
+import java.net.URL
 
-val timelineData = Json.decodeFromString<TimelineData>("timeline.json")
+object ResourceHandler {
+    fun getResource(path: String): URL = javaClass.getResource(path)
+        ?: throw FileNotFoundException("Cannot find file at $path")
+}
 
 fun main() {
+    println("Reading timeline.json")
+    val timelineJson = ResourceHandler.getResource("timeline.json").readText()
+    val timelineData = Json.decodeFromString<TimelineData>(timelineJson)
+
     embeddedServer(Netty, 8080) {
         install(ContentNegotiation) {
             json()
