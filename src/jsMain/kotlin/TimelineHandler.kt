@@ -37,7 +37,6 @@ private class TimelineHandler(timelineData: TimelineData) : InputListener {
 
     fun start() {
         console.log("Starting")
-        console.log(jsonClient)
         timeline.draw()
     }
 
@@ -45,14 +44,6 @@ private class TimelineHandler(timelineData: TimelineData) : InputListener {
         timeline.viewX -= dist.x
         timeline.draw()
     }
-
-//    override fun onRightClick() {
-//        console.log("right click")
-//
-//        canvas.width = window.innerWidth
-//        canvas.height = window.innerHeight
-//        timeline.dim = Vector2D(canvas.width, canvas.height)
-//    }
 }
 
 fun main() {

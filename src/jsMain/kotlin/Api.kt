@@ -13,4 +13,3 @@ val jsonClient = HttpClient {
 
 suspend fun getTimelineData(): TimelineData =
     jsonClient.get(endpoint + TimelineData.path)
-

@@ -5,7 +5,7 @@ data class TimelineData(
     val seriesList: List<Series>
 ) {
     companion object {
-        const val path = "/timelineData"
+        const val path = "/data/mcu.json"
     }
 }
 
