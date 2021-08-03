@@ -1,1 +1,1 @@
-web: ./build/install/timeline/bin/timeline
+web: ./build/install/timelinejs/bin/timelinejs

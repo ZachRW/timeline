@@ -1,3 +1,8 @@
+import timelinecommon.TimelineData
+import timelinejs.TextConfig
+import timelinejs.Timeline
+import timelinejs.Vector2D
+
 import kotlinx.browser.document
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
@@ -17,19 +22,7 @@ private class TimelineHandler(timelineData: TimelineData) : InputListener {
         timeline = Timeline(
             ctx,
             timelineData,
-            dim = Vector2D(canvas.width, canvas.height),
-            titleConfig = TextConfig(
-                text = "Example Title",
-                font = "40px serif"
-            ),
-            xAxisConfig = TextConfig(
-                text = "X-Axis",
-                font = "20px serif"
-            ),
-            yAxisConfig = TextConfig(
-                text = "Y-Axis",
-                font = "20px serif"
-            )
+            dim = Vector2D(canvas.width, canvas.height)
         )
 
         InputHandler(this, document.body!!.style, canvas, document)

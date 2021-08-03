@@ -1,3 +1,5 @@
+package timelinecommon
+
 import kotlinx.serialization.Serializable
 
 @Serializable
