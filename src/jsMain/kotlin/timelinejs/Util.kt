@@ -3,6 +3,7 @@ package timelinejs
 import org.w3c.dom.TextMetrics
 import timelinecommon.Date
 import timelinecommon.TimelineData
+import kotlin.contracts.contract
 import kotlin.js.Date as JSDate
 
 data class Vector2D(val x: Double, val y: Double) {
@@ -36,13 +37,25 @@ val TextMetrics.height: Double
 
 fun Date.toJSDate() = JSDate(year, month, day)
 
-val TimelineData.startDate: JSDate
+val TimelineData.dateRange: JSDateRange
     get() {
         val dates: List<JSDate> = seriesList.flatMap { series ->
             series.events.map { it.date.toJSDate() } +
-                    series.timeRanges.map { it.start.toJSDate() }
+                    series.dateRanges.map { it.start.toJSDate() }
         }
 
-        TODO()
-//        return dates.minByOrNull {  }
+        if (dates.isEmpty()) {
+            error("No dates found")
+        }
+
+        // Not-null assertions should never fail because dates is not empty
+        val start = dates.minByOrNull { it.getTime() }!!
+        val end = dates.maxByOrNull { it.getTime() }!!
+
+        return JSDateRange(start, end)
     }
+
+data class JSDateRange(
+    val start: JSDate,
+    val end: JSDate
+)

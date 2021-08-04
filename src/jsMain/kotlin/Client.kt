@@ -1,5 +1,4 @@
 import timelinecommon.TimelineData
-import timelinejs.TextConfig
 import timelinejs.Timeline
 import timelinejs.Vector2D
 
@@ -34,8 +33,7 @@ private class TimelineHandler(timelineData: TimelineData) : InputListener {
     }
 
     override fun onDragging(dist: Vector2D) {
-        timeline.viewX -= dist.x
-        timeline.draw()
+        timeline.translate(dist.x)
     }
 }
 
