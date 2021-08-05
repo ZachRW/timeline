@@ -1,10 +1,10 @@
 package timelinejs
 
+import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.TextMetrics
-import timelinecommon.Date
+import timelinecommon.CommonDate
 import timelinecommon.TimelineData
-import kotlin.contracts.contract
-import kotlin.js.Date as JSDate
+import kotlin.js.Date
 
 data class Vector2D(val x: Double, val y: Double) {
     constructor(x: Number, y: Number) : this(x.toDouble(), y.toDouble())
@@ -35,13 +35,17 @@ data class Vector2D(val x: Double, val y: Double) {
 val TextMetrics.height: Double
     get() = fontBoundingBoxAscent + fontBoundingBoxDescent
 
-fun Date.toJSDate() = JSDate(year, month, day)
+fun CommonDate.toDate() = Date(year, month, day)
 
-val TimelineData.dateRange: JSDateRange
+operator fun Date.plus(ms: Double) = Date(getTime() + ms)
+
+operator fun Date.rangeTo(other: Date) = DateRange(this, other)
+
+val TimelineData.dateRange: DateRange
     get() {
-        val dates: List<JSDate> = seriesList.flatMap { series ->
-            series.events.map { it.date.toJSDate() } +
-                    series.dateRanges.map { it.start.toJSDate() }
+        val dates: List<Date> = seriesList.flatMap { series ->
+            series.events.map { it.date.toDate() } +
+                    series.namedDateRanges.map { it.start.toDate() }
         }
 
         if (dates.isEmpty()) {
@@ -52,10 +56,37 @@ val TimelineData.dateRange: JSDateRange
         val start = dates.minByOrNull { it.getTime() }!!
         val end = dates.maxByOrNull { it.getTime() }!!
 
-        return JSDateRange(start, end)
+        return start..end
     }
 
-data class JSDateRange(
-    val start: JSDate,
-    val end: JSDate
-)
+data class DateRange(
+    val start: Date,
+    val end: Date
+) {
+    operator fun contains(value: Date) = value.getTime() in start.getTime()..end.getTime()
+}
+
+fun Date.Companion.fromYear(year: Int) = Date(year, 1, 1)
+
+fun yearDatesWithin(dateRange: DateRange): List<Date> {
+    var startYear = dateRange.start.getFullYear()
+    val endYear = dateRange.end.getFullYear()
+
+    if (Date.fromYear(startYear) !in dateRange) {
+        startYear++
+    }
+
+    return (startYear..endYear).map(Date::fromYear)
+}
+
+inline fun CanvasRenderingContext2D.fill(block: CanvasRenderingContext2D.() -> Unit) {
+    beginPath()
+    block()
+    fill()
+}
+
+inline fun CanvasRenderingContext2D.stroke(block: CanvasRenderingContext2D.() -> Unit) {
+    beginPath()
+    block()
+    stroke()
+}

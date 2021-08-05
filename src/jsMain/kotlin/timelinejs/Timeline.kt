@@ -9,40 +9,32 @@ class Timeline(
     private val data: TimelineData,
     private var dim: Vector2D
 ) {
-    private var startDate: Date
-    private var msPerPx: Double
+    private val view: MutableView
 
     private val dateAxis: DateAxis
 
     init {
         val (start, end) = data.dateRange
-        startDate = start
-        msPerPx = (end.getTime() - start.getTime()) / dim.x
+        view = MutableView(start, end, dim.x)
 
         dateAxis = DateAxis(dim.y / 2, dim.x)
     }
 
     fun zoom(zoomPx: Double, multiplier: Double) {
-        val startMs = startDate.getTime()
-        val zoomMs = zoomPx * msPerPx
-
-        val startMsZoomed = zoomMs - multiplier * (zoomMs - startMs)
-
-        startDate = Date(startMsZoomed)
-        msPerPx *= multiplier
-
+        view.zoom(zoomPx, multiplier)
         update()
     }
 
     fun translate(deltaPx: Double) {
-        startDate = Date(startDate.getTime() + deltaPx * msPerPx)
-
+//        startDate += deltaPx * msPerPx
+        TODO()
         update()
     }
 
     fun draw() {
         ctx.clearRect(0.0, 0.0, dim.x, dim.y)
-        dateAxis.draw(ctx, startDate, msPerPx)
+//        dateAxis.draw(ctx, startDate, msPerPx)
+        TODO()
     }
 
     private fun update() {

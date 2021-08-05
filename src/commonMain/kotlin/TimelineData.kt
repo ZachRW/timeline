@@ -13,25 +13,25 @@ data class TimelineData(
 
 @Serializable
 data class Series(
-    val dateRanges: List<DateRange>,
+    val namedDateRanges: List<NamedDateRange>,
     val events: List<Event>
 )
 
 @Serializable
-data class DateRange(
+data class NamedDateRange(
     val name: String,
-    val start: Date,
-    val end: Date
+    val start: CommonDate,
+    val end: CommonDate
 )
 
 @Serializable
 data class Event(
     val name: String,
-    val date: Date
+    val date: CommonDate
 )
 
 @Serializable
-data class Date(
+data class CommonDate(
     val year: Int,
     val month: Int,
     val day: Int
