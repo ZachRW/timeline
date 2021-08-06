@@ -27,13 +27,24 @@ open class View protected constructor(
     var endDateMs: Int = calculateEndDateMs()
         private set
 
-    private fun calculateEndDate() = startDate + msPerPx * width
+    private fun calculateEndDate() = startDate + (msPerPx * width).toInt()
     private fun calculateStartDateMs() = startDate.getDate()
     private fun calculateEndDateMs() = endDate.getDate()
 
     fun pxToMs(px: Double): Int = (msPerPx * px).toInt()
     fun msToPx(ms: Int): Double = ms / msPerPx
     fun dateToPx(date: Date): Double = msToPx(date.getDate())
+
+    fun yearDatesWithin(): List<Date> {
+        var startYear = startDate.getFullYear()
+        val endYear = endDate.getFullYear()
+
+        if (Date.fromYear(startYear) !in startDate..endDate) {
+            startYear++
+        }
+
+        return (startYear..endYear).map(Date::fromYear)
+    }
 }
 
 class MutableView(
@@ -65,5 +76,9 @@ class MutableView(
 
         startDate = Date(startMsZoomed)
         msPerPx *= multiplier
+    }
+
+    fun translate(deltaPx: Double) {
+        startDate += pxToMs(deltaPx)
     }
 }

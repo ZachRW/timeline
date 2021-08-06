@@ -2,7 +2,6 @@ package timelinejs
 
 import timelinecommon.TimelineData
 import org.w3c.dom.CanvasRenderingContext2D
-import kotlin.js.Date
 
 class Timeline(
     private val ctx: CanvasRenderingContext2D,
@@ -17,7 +16,7 @@ class Timeline(
         val (start, end) = data.dateRange
         view = MutableView(start, end, dim.x)
 
-        dateAxis = DateAxis(dim.y / 2, dim.x)
+        dateAxis = DateAxis(dim.y / 2)
     }
 
     fun zoom(zoomPx: Double, multiplier: Double) {
@@ -26,15 +25,13 @@ class Timeline(
     }
 
     fun translate(deltaPx: Double) {
-//        startDate += deltaPx * msPerPx
-        TODO()
+        view.translate(deltaPx)
         update()
     }
 
     fun draw() {
         ctx.clearRect(0.0, 0.0, dim.x, dim.y)
-//        dateAxis.draw(ctx, startDate, msPerPx)
-        TODO()
+        dateAxis.draw(ctx, view)
     }
 
     private fun update() {
