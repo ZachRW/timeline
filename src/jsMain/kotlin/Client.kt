@@ -1,12 +1,12 @@
 import timelinecommon.TimelineData
-import timelinejs.Timeline
-import timelinejs.Vector2D
 
 import kotlinx.browser.document
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.w3c.dom.CanvasRenderingContext2D
 import org.w3c.dom.HTMLCanvasElement
+import timelinejs.Timeline
+import timelinejs.Vector2D
 
 private class TimelineHandler(timelineData: TimelineData) : InputListener {
     private val timeline: Timeline
@@ -30,10 +30,12 @@ private class TimelineHandler(timelineData: TimelineData) : InputListener {
     fun start() {
         console.log("Starting")
         timeline.draw()
+
+        console.log(timeline)
     }
 
     override fun onDragging(dist: Vector2D) {
-        timeline.translate(dist.x)
+        timeline.translate(-dist.x)
     }
 }
 

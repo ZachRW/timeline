@@ -5,8 +5,6 @@ import kotlin.js.Date
 
 fun CommonDate.toDate() = Date(year, month, day)
 
-operator fun Date.plus(ms: Int) = Date(getTime() + ms)
-
 operator fun Date.rangeTo(other: Date) = DateRange(this, other)
 
 data class DateRange(

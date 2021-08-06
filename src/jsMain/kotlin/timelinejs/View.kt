@@ -11,29 +11,28 @@ open class View protected constructor(
         protected set(value) {
             field = value
             endDate = calculateEndDate()
-            startDateMs = calculateStartDateMs()
         }
     open var msPerPx: Double = msPerPx
         protected set(value) {
             field = value
             endDate = calculateEndDate()
-            endDateMs = calculateEndDateMs()
         }
 
     var endDate: Date = calculateEndDate()
         private set
-    var startDateMs: Int = calculateStartDateMs()
-        private set
-    var endDateMs: Int = calculateEndDateMs()
-        private set
+    var startDateMs: Double
+        get() = startDate.getTime()
+        protected set(value) {
+            startDate = Date(value)
+        }
+    val endDateMs: Double
+        get() = endDate.getTime()
 
-    private fun calculateEndDate() = startDate + (msPerPx * width).toInt()
-    private fun calculateStartDateMs() = startDate.getDate()
-    private fun calculateEndDateMs() = endDate.getDate()
+    private fun calculateEndDate() = Date(startDateMs + pxToMs(width))
 
-    fun pxToMs(px: Double): Int = (msPerPx * px).toInt()
-    fun msToPx(ms: Int): Double = ms / msPerPx
-    fun dateToPx(date: Date): Double = msToPx(date.getDate())
+    fun pxToMs(px: Double): Double = msPerPx * px
+    fun msToPx(ms: Double): Double = ms / msPerPx
+    fun dateToPx(date: Date): Double = msToPx(date.getTime() - startDateMs)
 
     fun yearDatesWithin(): List<Date> {
         var startYear = startDate.getFullYear()
@@ -79,6 +78,6 @@ class MutableView(
     }
 
     fun translate(deltaPx: Double) {
-        startDate += pxToMs(deltaPx)
+        startDateMs += pxToMs(deltaPx)
     }
 }

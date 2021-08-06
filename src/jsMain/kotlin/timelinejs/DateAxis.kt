@@ -11,7 +11,7 @@ class DateAxis(private val y: Double) {
 
     private fun drawLine(ctx: CanvasContext, view: View) {
         with(ctx) {
-            lineWidth = 10.0
+            lineWidth = 2.0
             strokeStyle = "black"
 
             stroke {
@@ -22,10 +22,11 @@ class DateAxis(private val y: Double) {
     }
 
     private fun drawMarkers(ctx: CanvasContext, view: View, dates: List<Date>) {
+        ctx.fillStyle = "black"
         for (date in dates) {
-            with(ctx) {
-                fillCircle(Vector2D(view.dateToPx(date), y), 10.0)
-            }
+            val position = Vector2D(view.dateToPx(date), y)
+            console.log("Drawing at $position")
+            ctx.fillCircle(position, 10.0)
         }
     }
 }

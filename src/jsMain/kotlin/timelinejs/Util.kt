@@ -43,6 +43,8 @@ val TimelineData.dateRange: DateRange
                     series.namedDateRanges.map { it.end.toDate() }
         }
 
+        console.log(dates)
+
         if (dates.isEmpty()) {
             error("No dates found")
         }
@@ -50,6 +52,8 @@ val TimelineData.dateRange: DateRange
         // Not-null assertions should never fail because dates is not empty
         val start = dates.minByOrNull { it.getTime() }!!
         val end = dates.maxByOrNull { it.getTime() }!!
+
+        console.log(start, end)
 
         return start..end
     }
