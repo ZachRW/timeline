@@ -1,22 +1,20 @@
 package timelinejs
 
 import kotlin.js.Date
+import kotlin.properties.Delegates
 
 open class View protected constructor(
     startDate: Date,
     msPerPx: Double,
     val width: Double
 ) {
-    open var startDate: Date = startDate
-        protected set(value) {
-            field = value
-            endDate = calculateEndDate()
-        }
-    open var msPerPx: Double = msPerPx
-        protected set(value) {
-            field = value
-            endDate = calculateEndDate()
-        }
+    open var startDate: Date by Delegates.observable(startDate)
+    { _, _, _ -> endDate = calculateEndDate() }
+        protected set
+
+    open var msPerPx: Double by Delegates.observable(msPerPx)
+    { _, _, _ -> endDate = calculateEndDate() }
+        protected set
 
     var endDate: Date = calculateEndDate()
         private set
@@ -59,14 +57,11 @@ class MutableView(
 
     override var startDate: Date
         get() = super.startDate
-        set(value) {
-            super.startDate = value
-        }
+        set(value) { super.startDate = value }
+
     override var msPerPx: Double
         get() = super.msPerPx
-        set(value) {
-            super.msPerPx = value
-        }
+        set(value) { super.msPerPx = value }
 
     fun zoom(zoomPx: Double, multiplier: Double) {
         val zoomMs = pxToMs(zoomPx)

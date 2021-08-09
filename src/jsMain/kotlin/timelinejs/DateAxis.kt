@@ -1,16 +1,20 @@
 package timelinejs
 
-import org.w3c.dom.CanvasRenderingContext2D as CanvasContext
+import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 import kotlin.js.Date
 
-class DateAxis(private val y: Double) {
-    fun draw(ctx: CanvasContext, view: View) {
-        drawLine(ctx, view)
-        drawMarkers(ctx, view, view.yearDatesWithin())
+class DateAxis(
+    private val y: Double,
+    private val renderContext: RenderContext,
+    private val view: View
+) {
+    fun draw() {
+        drawLine()
+        drawMarkers(view.yearDatesWithin())
     }
 
-    private fun drawLine(ctx: CanvasContext, view: View) {
-        with(ctx) {
+    private fun drawLine() {
+        with(renderContext) {
             lineWidth = 2.0
             strokeStyle = "black"
 
@@ -21,12 +25,12 @@ class DateAxis(private val y: Double) {
         }
     }
 
-    private fun drawMarkers(ctx: CanvasContext, view: View, dates: List<Date>) {
-        ctx.fillStyle = "black"
+    private fun drawMarkers(dates: List<Date>) {
+        renderContext.fillStyle = "black"
         for (date in dates) {
             val position = Vector2D(view.dateToPx(date), y)
             console.log("Drawing at $position")
-            ctx.fillCircle(position, 10.0)
+            renderContext.fillCircle(position, 10.0)
         }
     }
 }

@@ -3,7 +3,7 @@ import timelinecommon.TimelineData
 import kotlinx.browser.document
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import org.w3c.dom.CanvasRenderingContext2D
+import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 import org.w3c.dom.HTMLCanvasElement
 import timelinejs.Timeline
 import timelinejs.Vector2D
@@ -16,7 +16,7 @@ private class TimelineHandler(timelineData: TimelineData) : InputListener {
         console.log("Initializing")
 
         canvas = document.getElementById("timelineCanvas") as HTMLCanvasElement
-        val ctx = canvas.getContext("2d") as CanvasRenderingContext2D
+        val ctx = canvas.getContext("2d") as RenderContext
 
         timeline = Timeline(
             ctx,
