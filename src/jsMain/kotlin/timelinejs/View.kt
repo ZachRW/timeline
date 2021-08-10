@@ -16,32 +16,26 @@ open class View protected constructor(
     { _, _, _ -> endDate = calculateEndDate() }
         protected set
 
-    var endDate: Date = calculateEndDate()
-        private set
     var startDateMs: Double
         get() = startDate.getTime()
         protected set(value) {
             startDate = Date(value)
         }
+    val startDatePx: Double
+        get() = dateToPx(startDate)
+
+    var endDate: Date = calculateEndDate()
+        private set
     val endDateMs: Double
         get() = endDate.getTime()
+    val endDatePx: Double
+        get() = dateToPx(endDate)
 
     private fun calculateEndDate() = Date(startDateMs + pxToMs(width))
 
     fun pxToMs(px: Double): Double = msPerPx * px
     fun msToPx(ms: Double): Double = ms / msPerPx
     fun dateToPx(date: Date): Double = msToPx(date.getTime() - startDateMs)
-
-    fun yearDatesWithin(): List<Date> {
-        var startYear = startDate.getFullYear()
-        val endYear = endDate.getFullYear()
-
-        if (Date.fromYear(startYear) !in startDate..endDate) {
-            startYear++
-        }
-
-        return (startYear..endYear).map(Date::fromYear)
-    }
 }
 
 class MutableView(

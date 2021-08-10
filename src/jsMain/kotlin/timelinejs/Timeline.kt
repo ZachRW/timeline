@@ -17,7 +17,7 @@ class Timeline(
         val (start, end) = data.dateRange
         view = MutableView(start, end, dim.x)
         dateAxis = DateAxis(dim.y / 2, renderContext, view)
-        dataRenderer = DataRenderer(renderContext, data)
+        dataRenderer = DataRenderer(data, renderContext, view)
     }
 
     fun zoom(zoomPx: Double, multiplier: Double) {

@@ -15,4 +15,5 @@ data class DateRange(
         value.getTime() in start.getTime()..end.getTime()
 }
 
-fun Date.Companion.fromYear(year: Int) = Date(year, 1, 1)
+fun Date.Companion.fromYear(year: Int) =
+    Date(year, 1, 1)
