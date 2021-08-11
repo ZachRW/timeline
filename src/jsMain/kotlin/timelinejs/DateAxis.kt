@@ -24,7 +24,19 @@ class DateAxis(
         }
 
     private fun drawMarkers() {
-        TODO()
+        val startRenderDate = view.pxToDate(-config.markerRadius)
+        val endRenderDate = view.pxToDate(view.width + config.markerRadius)
+
+        val markerDates = yearsWithin(startRenderDate..endRenderDate)
+        renderContext.applyMarkerConfig(config)
+        for (markerDate in markerDates) {
+            drawMarker(markerDate)
+        }
+    }
+
+    private fun drawMarker(date: Date) {
+        val center = Vector2D(view.dateToPx(date), y)
+        renderContext.fillCircle(center, config.markerRadius)
     }
 
     private fun yearsWithin(dateRange: DateRange): List<Date> {

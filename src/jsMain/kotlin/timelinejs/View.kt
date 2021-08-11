@@ -33,9 +33,21 @@ open class View protected constructor(
 
     private fun calculateEndDate() = Date(startDateMs + pxToMs(width))
 
+    /**
+     * Returns milliseconds relative to [startDate] at [px]
+     * @param [px] horizontal pixel position from the left
+     */
     fun pxToMs(px: Double): Double = msPerPx * px
+
+    /**
+     * Returns the horizontal pixel position from the left of [ms]
+     * @param [ms] milliseconds relative to [startDate]
+     */
     fun msToPx(ms: Double): Double = ms / msPerPx
+
     fun dateToPx(date: Date): Double = msToPx(date.getTime() - startDateMs)
+
+    fun pxToDate(px: Double): Date = Date(startDateMs + pxToMs(px))
 }
 
 class MutableView(

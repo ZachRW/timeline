@@ -33,7 +33,7 @@ class Timeline(
     fun draw() {
         clearCanvas()
         dateAxis.draw()
-        dataRenderer.draw()
+//        dataRenderer.draw()
     }
 
     private fun clearCanvas() =

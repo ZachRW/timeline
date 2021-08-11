@@ -1,6 +1,6 @@
 package timelinejs
 
-import org.w3c.dom.CanvasRenderingContext2D as RenderContex
+import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 
 data class DateAxisConfig(
     val lineWidth: Double,
@@ -18,11 +18,11 @@ data class DateAxisConfig(
     }
 }
 
-fun RenderContex.applyLineConfig(dateAxisConfig: DateAxisConfig) {
+fun RenderContext.applyLineConfig(dateAxisConfig: DateAxisConfig) {
     lineWidth = dateAxisConfig.lineWidth
     strokeStyle = dateAxisConfig.lineStyle
 }
 
-fun RenderContex.applyMarkerConfig(dateAxisConfig: DateAxisConfig) {
+fun RenderContext.applyMarkerConfig(dateAxisConfig: DateAxisConfig) {
     fillStyle = dateAxisConfig.markerStyle
 }
