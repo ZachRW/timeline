@@ -1,11 +1,11 @@
 import org.w3c.dom.GlobalEventHandlers
 import org.w3c.dom.css.CSSStyleDeclaration
 import org.w3c.dom.events.MouseEvent
+import org.w3c.dom.events.WheelEvent
 import timelinejs.Vector2D
 
 class InputHandler(
     private val listener: InputListener,
-    private val documentStyle: CSSStyleDeclaration,
     canvasHandler: GlobalEventHandlers,
     documentHandler: GlobalEventHandlers
 ) {
@@ -20,6 +20,7 @@ class InputHandler(
                 contextMenu(mouseEvent)
                 false
             }
+            onwheel = ::wheel
         }
         with(documentHandler) {
             onmouseup = ::mouseUp
@@ -30,7 +31,6 @@ class InputHandler(
     private fun mouseDown(mouseEvent: MouseEvent) {
         dragging = true
         dragStartPos = mouseEvent.getPos()
-        documentStyle.cursor = "ew-resize"
     }
 
     private fun contextMenu(mouseEvent: MouseEvent) {
@@ -41,7 +41,6 @@ class InputHandler(
     private fun mouseUp(mouseEvent: MouseEvent) {
         dragging = false
         listener.onDrag(mouseEvent.getPos() - dragStartPos)
-        documentStyle.cursor = "auto"
     }
 
     private fun mouseMove(mouseEvent: MouseEvent) {
@@ -52,6 +51,11 @@ class InputHandler(
         dragPrevPos = mousePos
     }
 
+    private fun wheel(wheelEvent: WheelEvent) {
+        wheelEvent.preventDefault()
+        listener.onVerticalScroll(wheelEvent)
+    }
+
     private fun MouseEvent.getPos() = Vector2D(x, y)
 }
 
@@ -59,4 +63,5 @@ interface InputListener {
     fun onDragging(dist: Vector2D) {}
     fun onDrag(dist: Vector2D) {}
     fun onRightClick() {}
+    fun onVerticalScroll(wheelEvent: WheelEvent) {}
 }

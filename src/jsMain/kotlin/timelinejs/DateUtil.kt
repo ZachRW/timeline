@@ -3,7 +3,7 @@ package timelinejs
 import timelinecommon.CommonDate
 import kotlin.js.Date
 
-fun CommonDate.toJsDate() = Date(year, month, day)
+fun CommonDate.toJsDate() = Date(year, month - 1, day)
 
 operator fun Date.rangeTo(other: Date) = DateRange(this, other)
 
@@ -16,4 +16,4 @@ data class DateRange(
 }
 
 fun Date.Companion.fromYear(year: Int) =
-    Date(year, 1, 1)
+    Date(year, 0, 1)

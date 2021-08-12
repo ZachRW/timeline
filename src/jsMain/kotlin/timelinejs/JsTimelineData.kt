@@ -16,8 +16,6 @@ class JsTimelineData(val seriesList: List<JsSeries>) {
         val start = dates.minByOrNull { it.getTime() }!!
         val end = dates.maxByOrNull { it.getTime() }!!
 
-        console.log(start, end)
-
         start..end
     }
 
