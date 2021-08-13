@@ -5,12 +5,11 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 import org.w3c.dom.HTMLCanvasElement
-import org.w3c.dom.events.WheelEvent
 import timelinejs.Timeline
 import timelinejs.Vector2D
 import kotlin.math.pow
 
-private const val ZOOM_EXPONENTIAL_BASE: Double = 1.0009535561438964
+private const val ZOOM_EXPONENTIAL_BASE: Double = 0.9990473522592097
 
 class TimelineHandler(timelineData: TimelineData) : InputListener {
     private val timeline: Timeline
@@ -37,9 +36,9 @@ class TimelineHandler(timelineData: TimelineData) : InputListener {
         timeline.translate(-dist.x)
     }
 
-    override fun onVerticalScroll(wheelEvent: WheelEvent) {
-        val zoomMultiplier = ZOOM_EXPONENTIAL_BASE.pow(wheelEvent.deltaY)
-        timeline.zoom(wheelEvent.x, zoomMultiplier)
+    override fun onScroll(scrollDist: Vector2D, mousePos: Vector2D) {
+        val zoomMultiplier = ZOOM_EXPONENTIAL_BASE.pow(scrollDist.y)
+        timeline.zoom(mousePos.x, zoomMultiplier)
     }
 }
 

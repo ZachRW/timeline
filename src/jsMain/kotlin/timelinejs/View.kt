@@ -3,6 +3,8 @@ package timelinejs
 import kotlin.js.Date
 import kotlin.properties.Delegates
 
+private val MS_PER_PX_RANGE: ClosedFloatingPointRange<Double> = 6_000_000.0..35_000_000_000.0
+
 open class View protected constructor(
     startDate: Date,
     msPerPx: Double,
@@ -63,22 +65,35 @@ class MutableView(
 
     override var startDate: Date
         get() = super.startDate
-        set(value) { super.startDate = value }
+        set(value) {
+            super.startDate = value
+        }
 
     override var msPerPx: Double
         get() = super.msPerPx
-        set(value) { super.msPerPx = value }
+        set(value) {
+            super.msPerPx = value
+        }
 
     fun zoom(zoomPx: Double, multiplier: Double) {
+        val actualMultiplier = coerceMultiplier(multiplier)
+
         val zoomMs = pxToMs(zoomPx)
 
-        val startMsZoomed = zoomMs - multiplier * (zoomMs - startDateMs)
+        val startOffsetMs = zoomMs - (zoomMs / actualMultiplier)
 
-        startDate = Date(startMsZoomed)
-        msPerPx *= multiplier
+        startDate = Date(startDateMs + startOffsetMs)
+        msPerPx /= actualMultiplier
     }
 
     fun translate(deltaPx: Double) {
         startDateMs += pxToMs(deltaPx)
     }
+
+    private fun coerceMultiplier(multiplier: Double): Double =
+        if (multiplier in MS_PER_PX_RANGE) {
+            multiplier
+        } else {
+            TODO("Coerce msPerPx into acceptable range")
+        }
 }

@@ -1,12 +1,12 @@
 import org.w3c.dom.GlobalEventHandlers
-import org.w3c.dom.css.CSSStyleDeclaration
+import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.events.MouseEvent
 import org.w3c.dom.events.WheelEvent
 import timelinejs.Vector2D
 
 class InputHandler(
     private val listener: InputListener,
-    canvasHandler: GlobalEventHandlers,
+    private val canvas: HTMLCanvasElement,
     documentHandler: GlobalEventHandlers
 ) {
     private var dragging = false
@@ -14,7 +14,7 @@ class InputHandler(
     private var dragPrevPos = Vector2D()
 
     init {
-        with(canvasHandler) {
+        with(canvas) {
             onmousedown = ::mouseDown
             oncontextmenu = { mouseEvent ->
                 contextMenu(mouseEvent)
@@ -30,7 +30,7 @@ class InputHandler(
 
     private fun mouseDown(mouseEvent: MouseEvent) {
         dragging = true
-        dragStartPos = mouseEvent.getPos()
+        dragStartPos = mouseEvent.mousePos()
     }
 
     private fun contextMenu(mouseEvent: MouseEvent) {
@@ -40,11 +40,11 @@ class InputHandler(
 
     private fun mouseUp(mouseEvent: MouseEvent) {
         dragging = false
-        listener.onDrag(mouseEvent.getPos() - dragStartPos)
+        listener.onDrag(mouseEvent.mousePos() - dragStartPos)
     }
 
     private fun mouseMove(mouseEvent: MouseEvent) {
-        val mousePos = mouseEvent.getPos()
+        val mousePos = mouseEvent.mousePos()
         if (dragging) {
             listener.onDragging(mousePos - dragPrevPos)
         }
@@ -53,15 +53,22 @@ class InputHandler(
 
     private fun wheel(wheelEvent: WheelEvent) {
         wheelEvent.preventDefault()
-        listener.onVerticalScroll(wheelEvent)
+        val scrollDist = Vector2D(wheelEvent.deltaX, wheelEvent.deltaY)
+        listener.onScroll(scrollDist, wheelEvent.mousePos())
     }
 
-    private fun MouseEvent.getPos() = Vector2D(x, y)
+    private fun MouseEvent.mousePos(): Vector2D {
+        val canvasBounds = canvas.getBoundingClientRect()
+        return Vector2D(
+            clientX - canvasBounds.left,
+            clientY - canvasBounds.top
+        )
+    }
 }
 
 interface InputListener {
     fun onDragging(dist: Vector2D) {}
     fun onDrag(dist: Vector2D) {}
     fun onRightClick() {}
-    fun onVerticalScroll(wheelEvent: WheelEvent) {}
+    fun onScroll(scrollDist: Vector2D, mousePos: Vector2D) {}
 }
