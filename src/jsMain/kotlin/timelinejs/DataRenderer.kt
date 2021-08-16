@@ -8,6 +8,20 @@ class DataRenderer(
     private val view: View
 ) {
     fun draw() {
-        TODO()
+        for (series in data.seriesList) {
+            if (series.visible) {
+                series.draw()
+            }
+        }
+    }
+
+    private fun JsSeries.draw() {
+        for (event in events) {
+            event.draw()
+        }
+    }
+
+    private fun JsEvent.draw() {
+        
     }
 }

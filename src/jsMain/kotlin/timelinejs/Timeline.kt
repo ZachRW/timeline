@@ -1,14 +1,16 @@
 package timelinejs
 
 import timelinecommon.TimelineData
+import timelinejs.config.TimelineConfig
 import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 
 class Timeline(
     private val renderContext: RenderContext,
     commonData: TimelineData,
-    private var dim: Vector2D
+    private var dim: Vector2D,
+    config: TimelineConfig = TimelineConfig.DEFAULT
 ) {
-    private val data: JsTimelineData = commonData.toJsTimelineData()
+    private val data: JsTimelineData = commonData.toJsTimelineData(config.seriesColorPalette)
     private val view: MutableView
     private val dateAxis: DateAxis
     private val dataRenderer: DataRenderer
@@ -16,7 +18,7 @@ class Timeline(
     init {
         val (start, end) = data.dateRange
         view = MutableView(start, end, dim.x)
-        dateAxis = DateAxis(dim.y / 2, renderContext, view)
+        dateAxis = DateAxis(dim.y / 2, renderContext, view, config.dateAxisConfig)
         dataRenderer = DataRenderer(data, renderContext, view)
     }
 
@@ -33,7 +35,7 @@ class Timeline(
     fun draw() {
         clearCanvas()
         dateAxis.draw()
-//        dataRenderer.draw()
+        dataRenderer.draw()
     }
 
     private fun clearCanvas() =

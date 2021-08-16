@@ -34,10 +34,13 @@ class JsTimelineData(val seriesList: List<JsSeries>) {
     }
 }
 
-data class JsSeries(
+class JsSeries(
     val namedDateRanges: List<JsNamedDateRange>,
-    val events: List<JsEvent>
-)
+    val events: List<JsEvent>,
+    val color: String
+) {
+    var visible = true
+}
 
 data class JsNamedDateRange(
     val name: String,
@@ -50,15 +53,17 @@ data class JsEvent(
     val date: Date
 )
 
-fun TimelineData.toJsTimelineData(): JsTimelineData {
-    val jsSeriesList = seriesList.map { it.toJsSeries() }
+fun TimelineData.toJsTimelineData(seriesColorPalette: SeriesColorPalette): JsTimelineData {
+    val seriesColorProvider = SeriesColorProvider(seriesColorPalette)
+    val jsSeriesList = seriesList.map { it.toJsSeries(seriesColorProvider) }
     return JsTimelineData(jsSeriesList)
 }
 
-private fun Series.toJsSeries(): JsSeries {
+private fun Series.toJsSeries(seriesColorProvider: SeriesColorProvider): JsSeries {
     val jsNamedDateRanges = namedDateRanges.map { it.toJsNamedDateRange() }
     val jsEvents = events.map { it.toJsEvent() }
-    return JsSeries(jsNamedDateRanges, jsEvents)
+    val jsColor = color ?: seriesColorProvider.next()
+    return JsSeries(jsNamedDateRanges, jsEvents, jsColor)
 }
 
 private fun NamedDateRange.toJsNamedDateRange() =

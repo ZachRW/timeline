@@ -90,10 +90,14 @@ class MutableView(
         startDateMs += pxToMs(deltaPx)
     }
 
-    private fun coerceMultiplier(multiplier: Double): Double =
-        if (multiplier in MS_PER_PX_RANGE) {
+    private fun coerceMultiplier(multiplier: Double): Double {
+        val expectedMsPerPx = msPerPx / multiplier
+
+        return if (expectedMsPerPx in MS_PER_PX_RANGE) {
             multiplier
         } else {
-            TODO("Coerce msPerPx into acceptable range")
+            val coercedMsPerPx = expectedMsPerPx.coerceIn(MS_PER_PX_RANGE)
+            msPerPx / coercedMsPerPx
         }
+    }
 }
