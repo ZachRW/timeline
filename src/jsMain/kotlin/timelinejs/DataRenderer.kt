@@ -19,9 +19,16 @@ class DataRenderer(
         for (event in events) {
             event.draw()
         }
+        for (namedDateRange in namedDateRanges) {
+            namedDateRange.draw()
+        }
     }
 
     private fun JsEvent.draw() {
-        
+        val nameMetrics = renderContext.measureText(name)
+    }
+
+    private fun JsNamedDateRange.draw() {
+        // TODO
     }
 }
