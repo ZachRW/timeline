@@ -28,6 +28,8 @@ data class Vector2D(val x: Double, val y: Double) {
 
     operator fun div(scalar: Double) =
         Vector2D(x / scalar, y / scalar)
+
+    fun isZero() = x == 0.0 && y == 0.0
 }
 
 val TextMetrics.height: Double

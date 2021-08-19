@@ -4,11 +4,10 @@ import org.w3c.dom.CENTER
 import org.w3c.dom.CanvasTextAlign
 import timelinejs.config.DateAxisConfig
 import kotlin.js.Date
-import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 
 class DateAxis(
     private val y: Double,
-    private val renderContext: RenderContext,
+    private val renderer: Renderer,
     private val view: View,
     private val config: DateAxisConfig
 ) {
@@ -19,10 +18,7 @@ class DateAxis(
 
     private fun drawLine() {
         applyLineConfig()
-        renderContext.stroke {
-            moveTo(0.0, y)
-            lineTo(view.width, y)
-        }
+        renderer.line(0.0, y, view.width, y)
     }
 
     private fun drawMarkers() {
@@ -38,11 +34,11 @@ class DateAxis(
 
     private fun drawMarker(date: Date) {
         val center = Vector2D(view.dateToPx(date), y)
-        renderContext.fillCircle(center, config.markerRadius)
+        renderer.fillCircle(center, config.markerRadius)
 
         val textCenter = center + Vector2D(0, 20)
         applyYearTextConfig()
-        renderContext.fillText(date.getFullYear().toString(), textCenter.x, textCenter.y)
+        renderer.fillText(date.getFullYear().toString(), textCenter.x, textCenter.y)
     }
 
     private fun yearsWithin(dateRange: DateRange): List<Date> {
@@ -58,18 +54,18 @@ class DateAxis(
     }
 
     private fun applyLineConfig() {
-        with(renderContext) {
+        with(renderer) {
             lineWidth = config.lineWidth
             strokeStyle = config.lineStyle
         }
     }
 
     private fun applyMarkerConfig() {
-        renderContext.fillStyle = config.markerStyle
+        renderer.fillStyle = config.markerStyle
     }
 
     private fun applyYearTextConfig() {
-        with(renderContext) {
+        with(renderer) {
             font = config.yearTextConfig.font
             fillStyle = config.yearTextConfig.color
             textAlign = CanvasTextAlign.CENTER

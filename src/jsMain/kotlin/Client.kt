@@ -5,6 +5,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 import org.w3c.dom.HTMLCanvasElement
+import timelinejs.Rectangle
 import timelinejs.Timeline
 import timelinejs.Vector2D
 import kotlin.math.pow
@@ -21,7 +22,7 @@ class TimelineHandler(timelineData: TimelineData) : InputListener {
         timeline = Timeline(
             ctx,
             timelineData,
-            dim = Vector2D(canvas.width, canvas.height)
+            bounds = Rectangle(0, 0, canvas.width, canvas.height)
         )
 
         InputHandler(this, canvas, document)
