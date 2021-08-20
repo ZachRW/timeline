@@ -1,10 +1,10 @@
 package timelinejs
 
-import org.w3c.dom.CanvasRenderingContext2D as RenderContext
+import timelinejs.rendering.Renderer
 
 class DataRenderer(
     private val data: JsTimelineData,
-    private val renderContext: RenderContext,
+    private val renderContext: Renderer,
     private val view: View
 ) {
     fun draw() {
@@ -25,7 +25,6 @@ class DataRenderer(
     }
 
     private fun JsEvent.draw() {
-        val nameMetrics = renderContext.measureText(name)
     }
 
     private fun JsNamedDateRange.draw() {

@@ -1,8 +1,4 @@
-package timelinejs
-
-import org.w3c.dom.CanvasRenderingContext2D as RenderContext
-import org.w3c.dom.TextMetrics
-import kotlin.math.PI
+package timelinejs.rendering
 
 data class Vector2D(val x: Double, val y: Double) {
     constructor(x: Number, y: Number) : this(x.toDouble(), y.toDouble())
@@ -31,25 +27,3 @@ data class Vector2D(val x: Double, val y: Double) {
 
     fun isZero() = x == 0.0 && y == 0.0
 }
-
-val TextMetrics.height: Double
-    get() = fontBoundingBoxAscent + fontBoundingBoxDescent
-
-inline fun RenderContext.fill(block: RenderContext.() -> Unit) {
-    beginPath()
-    block()
-    fill()
-}
-
-inline fun RenderContext.stroke(block: RenderContext.() -> Unit) {
-    beginPath()
-    block()
-    stroke()
-}
-
-inline fun RenderContext.circle(center: Vector2D, radius: Double) {
-    arc(center.x, center.y, radius, 0.0, 2 * PI)
-}
-
-inline fun RenderContext.fillCircle(center: Vector2D, radius: Double) =
-    fill { circle(center, radius) }

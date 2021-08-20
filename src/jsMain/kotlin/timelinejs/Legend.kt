@@ -1,5 +1,6 @@
 package timelinejs
 
+import timelinejs.rendering.Vector2D
 import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 
 class Legend(

@@ -1,11 +1,13 @@
 package timelinejs.config
 
+import timelinejs.rendering.TextStyle
+
 data class DateAxisConfig(
     val lineWidth: Double,
     val lineStyle: String,
     val markerRadius: Double,
     val markerStyle: String,
-    val yearTextConfig: TextConfig
+    val yearTextConfig: TextStyle
 ) {
     companion object {
         val DEFAULT = DateAxisConfig(
@@ -13,7 +15,7 @@ data class DateAxisConfig(
             lineStyle = "black",
             markerRadius = 10.0,
             markerStyle = "black",
-            yearTextConfig = TextConfig(
+            yearTextConfig = TextStyle(
                 font = "10px",
                 color = "black"
             )

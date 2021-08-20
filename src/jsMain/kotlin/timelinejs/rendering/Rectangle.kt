@@ -1,4 +1,4 @@
-package timelinejs
+package timelinejs.rendering
 
 data class Rectangle(
     val x: Double,
@@ -11,6 +11,8 @@ data class Rectangle(
 
     constructor(x: Number, y: Number, width: Number, height: Number)
             : this(x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble())
+
+    val dim get() = Vector2D(width, height)
 
     val left get() = x
     val right get() = x + width
@@ -30,4 +32,7 @@ data class Rectangle(
     val leftCenter get() = Vector2D(left, centerY)
     val rightCenter get() = Vector2D(right, centerY)
     val center get() = Vector2D(centerX, centerY)
+
+    fun translated(startPos: Vector2D, endPos: Vector2D) =
+        Rectangle(-startPos + endPos, dim)
 }

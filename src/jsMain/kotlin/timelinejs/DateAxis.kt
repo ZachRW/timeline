@@ -3,6 +3,8 @@ package timelinejs
 import org.w3c.dom.CENTER
 import org.w3c.dom.CanvasTextAlign
 import timelinejs.config.DateAxisConfig
+import timelinejs.rendering.Renderer
+import timelinejs.rendering.Vector2D
 import kotlin.js.Date
 
 class DateAxis(
@@ -38,7 +40,7 @@ class DateAxis(
 
         val textCenter = center + Vector2D(0, 20)
         applyYearTextConfig()
-        renderer.fillText(date.getFullYear().toString(), textCenter.x, textCenter.y)
+        renderer.fillText(date.getFullYear().toString(), textCenter)
     }
 
     private fun yearsWithin(dateRange: DateRange): List<Date> {

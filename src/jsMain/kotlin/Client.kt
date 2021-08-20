@@ -5,9 +5,9 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 import org.w3c.dom.HTMLCanvasElement
-import timelinejs.Rectangle
+import timelinejs.rendering.Rectangle
 import timelinejs.Timeline
-import timelinejs.Vector2D
+import timelinejs.rendering.Vector2D
 import kotlin.math.pow
 
 private const val ZOOM_EXPONENTIAL_BASE: Double = 0.9990473522592097
