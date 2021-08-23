@@ -1,16 +1,18 @@
 package timelinejs.rendering
 
+import timelinejs.rendering.datastructures.Rectangle
+
 class RoundRectangle(
     private val bounds: Rectangle,
     private val style: RoundRectangleStyle,
     private val renderer: Renderer
 ) : Renderable {
     override fun render() {
-        applyConfig()
+        applyStyle()
         fillOrStroke()
     }
 
-    private fun applyConfig() {
+    private fun applyStyle() {
         with(renderer) {
             lineWidth = style.lineWidth
             lineDash = style.lineDash

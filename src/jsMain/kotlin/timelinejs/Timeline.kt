@@ -2,7 +2,6 @@ package timelinejs
 
 import timelinecommon.TimelineData
 import timelinejs.config.TimelineConfig
-import timelinejs.rendering.Rectangle
 import timelinejs.rendering.Renderer
 import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 

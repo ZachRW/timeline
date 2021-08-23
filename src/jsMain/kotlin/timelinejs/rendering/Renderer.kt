@@ -1,11 +1,14 @@
 package timelinejs.rendering
 
+import timelinejs.rendering.datastructures.Point
+import timelinejs.rendering.datastructures.Rectangle
+import timelinejs.rendering.datastructures.Size
 import kotlin.math.PI
 import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 
 class Renderer(private val renderContext: RenderContext, private val bounds: Rectangle) {
     init {
-        if (!bounds.topLeft.isZero()) {
+        if (!bounds.location.isEmpty()) {
             error("Render bounds must be at (0, 0)")
         }
     }
@@ -20,7 +23,7 @@ class Renderer(private val renderContext: RenderContext, private val bounds: Rec
         get() = renderContext.getLineDash()
         set(value) = renderContext.setLineDash(value)
 
-    fun fillCircle(center: Vector2D, radius: Double) {
+    fun fillCircle(center: Point, radius: Double) {
         fill { circle(center, radius) }
     }
 
@@ -61,7 +64,7 @@ class Renderer(private val renderContext: RenderContext, private val bounds: Rec
         renderContext.stroke()
     }
 
-    private fun circle(center: Vector2D, radius: Double) {
+    private fun circle(center: Point, radius: Double) {
         renderContext.arc(center.x, center.y, radius, 0.0, 2 * PI)
     }
 
@@ -79,9 +82,9 @@ class Renderer(private val renderContext: RenderContext, private val bounds: Rec
         }
     }
 
-    fun textBounds(text: String): Rectangle {
+    fun textSize(text: String): Size {
         val metrics = renderContext.measureText(text)
         val height = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent
-        return Rectangle(0, 0, metrics.width, height)
+        return Size(metrics.width, height)
     }
 }

@@ -7,17 +7,12 @@ class Text(
     private val style: TextStyle,
     private val renderer: Renderer
 ) : Renderable {
-    val bounds: Rectangle by lazy {
-        applyConfig()
-        renderer.textBounds(text)
-    }
-
     override fun render() {
-        applyConfig()
+        applyStyle()
         fillOrStroke()
     }
 
-    private fun applyConfig() {
+    private fun applyStyle() {
         with(renderer) {
             font = style.font
             textAlign = style.textAlign

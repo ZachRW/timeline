@@ -2,7 +2,6 @@ import org.w3c.dom.GlobalEventHandlers
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.events.MouseEvent
 import org.w3c.dom.events.WheelEvent
-import timelinejs.rendering.Vector2D
 
 class InputHandler(
     private val listener: InputListener,

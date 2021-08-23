@@ -4,7 +4,7 @@ import org.w3c.dom.CENTER
 import org.w3c.dom.CanvasTextAlign
 import timelinejs.config.DateAxisConfig
 import timelinejs.rendering.Renderer
-import timelinejs.rendering.Vector2D
+import timelinejs.rendering.datastructures.Point
 import kotlin.js.Date
 
 class DateAxis(
@@ -14,11 +14,11 @@ class DateAxis(
     private val config: DateAxisConfig
 ) {
     fun draw() {
-        drawLine()
+        drawAxisLine()
         drawMarkers()
     }
 
-    private fun drawLine() {
+    private fun drawAxisLine() {
         applyLineConfig()
         renderer.line(0.0, y, view.width, y)
     }
@@ -35,10 +35,10 @@ class DateAxis(
     }
 
     private fun drawMarker(date: Date) {
-        val center = Vector2D(view.dateToPx(date), y)
+        val center = Point(view.dateToPx(date), y)
         renderer.fillCircle(center, config.markerRadius)
 
-        val textCenter = center + Vector2D(0, 20)
+        val textCenter = center + Point(0.0, 20.0)
         applyYearTextConfig()
         renderer.fillText(date.getFullYear().toString(), textCenter)
     }
