@@ -4,7 +4,7 @@ import org.w3c.dom.CENTER
 import org.w3c.dom.CanvasTextAlign
 import timelinejs.config.DateAxisConfig
 import timelinejs.rendering.Renderer
-import timelinejs.rendering.datastructures.Point
+import timelinejs.rendering.datastructure.Point
 import kotlin.js.Date
 
 class DateAxis(

@@ -1,7 +1,9 @@
-package timelinejs.rendering
+package timelinejs.rendering.renderable
 
-import timelinejs.rendering.datastructures.Point
-import timelinejs.rendering.datastructures.Rectangle
+import timelinejs.rendering.style.EnclosedTextStyle
+import timelinejs.rendering.Renderer
+import timelinejs.rendering.datastructure.Point
+import timelinejs.rendering.datastructure.Rectangle
 
 class EnclosedText(
     x: Double,

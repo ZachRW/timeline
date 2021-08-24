@@ -1,6 +1,6 @@
 package timelinejs.config
 
-import timelinejs.rendering.TextStyle
+import timelinejs.rendering.style.TextStyle
 
 data class DateAxisConfig(
     val lineWidth: Double,

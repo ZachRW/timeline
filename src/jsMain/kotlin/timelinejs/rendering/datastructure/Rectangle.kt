@@ -1,4 +1,4 @@
-package timelinejs.rendering.datastructures
+package timelinejs.rendering.datastructure
 
 data class Rectangle(
     val x: Double,

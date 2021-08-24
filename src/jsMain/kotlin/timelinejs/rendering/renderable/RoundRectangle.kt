@@ -1,6 +1,9 @@
-package timelinejs.rendering
+package timelinejs.rendering.renderable
 
-import timelinejs.rendering.datastructures.Rectangle
+import timelinejs.rendering.Renderer
+import timelinejs.rendering.style.RoundRectangleStyle
+import timelinejs.rendering.datastructure.Rectangle
+import timelinejs.rendering.style.DrawMode
 
 class RoundRectangle(
     private val bounds: Rectangle,
@@ -15,11 +18,11 @@ class RoundRectangle(
     private fun applyStyle() {
         with(renderer) {
             lineWidth = style.lineWidth
-            lineDash = style.lineDash
+            lineDash = style.lineDash.toTypedArray()
 
             when (style.drawMode) {
-                DrawMode.FILL -> fillStyle = style.style
-                DrawMode.STROKE -> strokeStyle = style.style
+                DrawMode.FILL -> fillStyle = style.jsStyle
+                DrawMode.STROKE -> strokeStyle = style.jsStyle
             }
         }
     }

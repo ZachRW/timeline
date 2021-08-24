@@ -1,6 +1,6 @@
-package timelinejs.rendering
+package timelinejs.rendering.style
 
-class EnclosedTextStyle(
+data class EnclosedTextStyle(
     val roundRectStyle: RoundRectangleStyle,
     val textStyle: TextStyle,
     val textPadding: Double

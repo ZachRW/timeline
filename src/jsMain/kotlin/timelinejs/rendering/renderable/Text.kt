@@ -1,4 +1,8 @@
-package timelinejs.rendering
+package timelinejs.rendering.renderable
+
+import timelinejs.rendering.Renderer
+import timelinejs.rendering.style.TextStyle
+import timelinejs.rendering.style.DrawMode
 
 class Text(
     private val x: Double,
@@ -19,8 +23,8 @@ class Text(
             textBaseline = style.textBaseline
 
             when (style.drawMode) {
-                DrawMode.FILL -> fillStyle = style.style
-                DrawMode.STROKE -> strokeStyle = style.style
+                DrawMode.FILL -> fillStyle = style.jsStyle
+                DrawMode.STROKE -> strokeStyle = style.jsStyle
             }
         }
     }

@@ -1,4 +1,4 @@
-package timelinejs.rendering.datastructures
+package timelinejs.rendering.datastructure
 
 data class Size(val width: Double, val height: Double) {
     constructor(point: Point) : this(point.x, point.y)
