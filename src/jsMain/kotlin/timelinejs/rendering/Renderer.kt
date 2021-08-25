@@ -27,10 +27,6 @@ class Renderer(private val renderContext: RenderContext, private val bounds: Rec
         get() = renderContext.getLineDash()
         set(value) = renderContext.setLineDash(value)
 
-    fun fillCircle(center: Point, radius: Double) {
-        fill { circle(center, radius) }
-    }
-
     fun fillText(text: String, x: Double, y: Double) {
         renderContext.fillText(text, x, y)
     }
@@ -50,25 +46,26 @@ class Renderer(private val renderContext: RenderContext, private val bounds: Rec
         renderContext.clearRect(0.0, 0.0, bounds.width, bounds.height)
     }
 
-    fun getDrawFun(drawMode: DrawMode): (Renderer.() -> Unit) -> Unit =
+    fun useDrawFun(drawMode: DrawMode, block: Renderer.() -> Unit) {
         when (drawMode) {
-            DrawMode.FILL -> ::fill
-            DrawMode.STROKE -> ::stroke
+            DrawMode.FILL -> fill(block)
+            DrawMode.STROKE -> stroke(block)
         }
+    }
 
-    fun fill(block: Renderer.() -> Unit) {
+    private fun fill(block: Renderer.() -> Unit) {
         renderContext.beginPath()
         block()
         renderContext.fill()
     }
 
-    fun stroke(block: Renderer.() -> Unit) {
+    private fun stroke(block: Renderer.() -> Unit) {
         renderContext.beginPath()
         block()
         renderContext.stroke()
     }
 
-    private fun circle(center: Point, radius: Double) {
+    fun circle(center: Point, radius: Double) {
         renderContext.arc(center.x, center.y, radius, 0.0, 2 * PI)
     }
 

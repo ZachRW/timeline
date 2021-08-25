@@ -1,14 +1,14 @@
 package timelinejs.rendering.renderable
 
 import timelinejs.rendering.Renderer
-import timelinejs.rendering.datastructure.Rectangle
+import timelinejs.rendering.datastructure.Point
 import timelinejs.rendering.style.ClosedShapeStyle
 import timelinejs.rendering.style.DrawMode
-import timelinejs.rendering.style.RoundRectangleStyle
 
-class RoundRectangle(
-    private val bounds: Rectangle,
-    private val style: RoundRectangleStyle,
+class Circle(
+    private val center: Point,
+    private val radius: Double,
+    private val style: ClosedShapeStyle,
     private val renderer: Renderer
 ) : Renderable {
     override fun render() {
@@ -30,7 +30,7 @@ class RoundRectangle(
 
     private fun fillOrStroke() {
         renderer.useDrawFun(style.drawMode) {
-            roundRect(bounds, style.radius)
+            circle(center, radius)
         }
     }
 }

@@ -1,23 +1,34 @@
 package timelinejs.config
 
+import org.w3c.dom.CENTER
+import org.w3c.dom.CanvasTextAlign
+import timelinejs.rendering.style.ClosedShapeStyle
+import timelinejs.rendering.style.DrawMode
+import timelinejs.rendering.style.LineStyle
 import timelinejs.rendering.style.TextStyle
 
 data class DateAxisConfig(
-    val lineWidth: Double,
-    val lineStyle: String,
+    val axisLineStyle: LineStyle,
     val markerRadius: Double,
-    val markerStyle: String,
-    val yearTextConfig: TextStyle
+    val markerStyle: ClosedShapeStyle,
+    val yearTextStyle: TextStyle
 ) {
     companion object {
         val DEFAULT = DateAxisConfig(
-            lineWidth = 2.0,
-            lineStyle = "black",
+            axisLineStyle = LineStyle(
+                jsStyle = "black",
+                width = 2.0
+            ),
             markerRadius = 10.0,
-            markerStyle = "black",
-            yearTextConfig = TextStyle(
+            markerStyle = ClosedShapeStyle(
+                jsStyle = "black",
+                drawMode = DrawMode.FILL
+            ),
+            yearTextStyle = TextStyle(
+                jsStyle = "black",
                 font = "10px",
-                color = "black"
+                drawMode = DrawMode.FILL,
+                textAlign = CanvasTextAlign.CENTER
             )
         )
     }

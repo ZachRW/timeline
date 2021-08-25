@@ -1,9 +1,9 @@
 package timelinejs.rendering.style
 
-data class RoundRectangleStyle(
-    val jsStyle: dynamic,
-    val drawMode: DrawMode,
+class RoundRectangleStyle(
     val radius: Double,
-    val lineWidth: Double,
-    val lineDash: List<Double>
-)
+    jsStyle: dynamic,
+    drawMode: DrawMode,
+    lineWidth: Double,
+    lineDash: Collection<Double>
+) : ClosedShapeStyle(jsStyle, drawMode, lineWidth, lineDash)

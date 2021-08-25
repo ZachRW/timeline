@@ -3,6 +3,7 @@ package timelinejs
 import timelinecommon.TimelineData
 import timelinejs.config.TimelineConfig
 import timelinejs.rendering.Renderer
+import timelinejs.rendering.datastructure.Rectangle
 import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 
 class Timeline(
