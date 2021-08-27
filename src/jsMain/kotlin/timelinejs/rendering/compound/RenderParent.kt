@@ -3,11 +3,7 @@ package timelinejs.rendering.compound
 import timelinejs.rendering.Renderable
 
 open class RenderParent : Renderable {
-    private val children = mutableListOf<Renderable>()
-
-    protected fun addChildren(vararg children: Renderable) {
-        this.children += children
-    }
+    protected var children = mutableListOf<Renderable>()
 
     override fun render() {
         renderChildren()

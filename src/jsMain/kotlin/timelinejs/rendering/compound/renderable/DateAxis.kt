@@ -24,37 +24,37 @@ class DateAxis(
         renderer
     )
 
-    init {
-        addChildren(axisLine)
-    }
-
     override fun render() {
+        setChildren()
         renderChildren()
-        createDateMarkers().forEach(DateMarker::render)
     }
 
-    private fun createDateMarkers(): List<DateMarker> {
-        val markers = mutableListOf<DateMarker>()
+    private fun setChildren() {
+        children = mutableListOf(axisLine)
+        addDateMarkersToChildren()
+    }
 
-        val markerRadius = style.markerStyle.circleRadius
-        val startRenderDate = view.pxToDate(-markerRadius)
-        val endRenderDate = view.pxToDate(view.width + markerRadius)
-
-        val markerDates = yearsWithin(startRenderDate..endRenderDate)
-        for (markerDate in markerDates) {
-            markers += createDateMarker(markerDate)
+    private fun addDateMarkersToChildren() {
+        for (markerDate in getDateMarkerDates()) {
+            addDateMarkerToChildren(markerDate)
         }
-
-        return markers
     }
 
-    private fun createDateMarker(date: Date): DateMarker {
-        return DateMarker(
+    private fun addDateMarkerToChildren(date: Date) {
+        children += DateMarker(
             Point(view.dateToPx(date), y),
             date.getFullYear().toString(),
             style.markerStyle,
             renderer
         )
+    }
+
+    private fun getDateMarkerDates(): List<Date> {
+        val markerRadius = style.markerStyle.circleRadius
+        val startRenderDate = view.pxToDate(-markerRadius)
+        val endRenderDate = view.pxToDate(view.width + markerRadius)
+
+        return yearsWithin(startRenderDate..endRenderDate)
     }
 
     private fun yearsWithin(dateRange: DateRange): List<Date> {

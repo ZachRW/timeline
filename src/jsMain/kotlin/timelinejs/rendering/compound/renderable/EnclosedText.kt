@@ -25,6 +25,6 @@ class EnclosedText(
         text = Text(location, textStr, style.textStyle, renderer)
         roundRect = RoundRectangle(bounds, style.roundRectStyle, renderer)
 
-        addChildren(roundRect, text)
+        children = mutableListOf(roundRect, text)
     }
 }

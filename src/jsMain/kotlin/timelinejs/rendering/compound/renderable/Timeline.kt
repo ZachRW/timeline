@@ -14,19 +14,19 @@ class Timeline(
     renderContext: RenderContext,
     commonData: TimelineData,
     bounds: Rectangle,
-    config: TimelineStyle = TimelineStyle.DEFAULT
+    style: TimelineStyle = TimelineStyle.DEFAULT
 ) : RenderParent() {
     private val renderer = Renderer(renderContext, bounds)
-    private val data: JsTimelineData = commonData.toJsTimelineData(config.seriesColorPalette)
+    private val data: JsTimelineData = commonData.toJsTimelineData(style.seriesColorPalette)
     private val view: MutableView
     private val dateAxis: DateAxis
 
     init {
         val (start, end) = data.dateRange
         view = MutableView(start, end, bounds.width)
-        dateAxis = DateAxis(bounds.centerY, renderer, view, config.dateAxisStyle)
+        dateAxis = DateAxis(bounds.centerY, renderer, view, style.dateAxisStyle)
 
-        addChildren(dateAxis)
+        children += dateAxis
     }
 
     fun zoom(zoomPx: Double, multiplier: Double) {

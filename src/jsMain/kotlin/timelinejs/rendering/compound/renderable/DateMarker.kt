@@ -27,6 +27,6 @@ class DateMarker(
     )
 
     init {
-        addChildren(circle, text)
+        children = mutableListOf(circle, text)
     }
 }

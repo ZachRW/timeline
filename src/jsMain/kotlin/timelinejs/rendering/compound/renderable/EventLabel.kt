@@ -7,11 +7,11 @@ import timelinejs.rendering.simple.renderable.Line
 import timelinejs.rendering.compound.style.EventLabelStyle
 
 class EventLabel(
-    private val enclosedText: EnclosedText,
-    private val stem: Line
+    enclosedText: EnclosedText,
+    stem: Line
 ) : RenderParent() {
     init {
-        addChildren(stem, enclosedText)
+        children = mutableListOf(stem, enclosedText)
     }
 
     companion object {
