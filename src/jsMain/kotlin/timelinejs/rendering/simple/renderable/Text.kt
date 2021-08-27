@@ -1,12 +1,13 @@
-package timelinejs.rendering.renderable
+package timelinejs.rendering.simple.renderable
 
 import timelinejs.rendering.Renderer
-import timelinejs.rendering.style.TextStyle
-import timelinejs.rendering.style.DrawMode
+import timelinejs.datastructure.Point
+import timelinejs.rendering.Renderable
+import timelinejs.rendering.simple.style.TextStyle
+import timelinejs.rendering.compound.style.DrawMode
 
 class Text(
-    private val x: Double,
-    private val y: Double,
+    private val location: Point,
     private val text: String,
     private val style: TextStyle,
     private val renderer: Renderer
@@ -31,8 +32,10 @@ class Text(
 
     private fun fillOrStroke() {
         when (style.drawMode) {
-            DrawMode.FILL -> renderer.fillText(text, x, y)
-            DrawMode.STROKE -> renderer.strokeText(text, x, y)
+            DrawMode.FILL ->
+                renderer.fillText(text, location)
+            DrawMode.STROKE ->
+                renderer.strokeText(text, location)
         }
     }
 }

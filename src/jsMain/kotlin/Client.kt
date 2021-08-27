@@ -5,7 +5,9 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 import org.w3c.dom.HTMLCanvasElement
-import timelinejs.Timeline
+import timelinejs.rendering.compound.renderable.Timeline
+import timelinejs.datastructure.Point
+import timelinejs.datastructure.Rectangle
 import kotlin.math.pow
 
 private const val ZOOM_EXPONENTIAL_BASE: Double = 0.9990473522592097
@@ -28,14 +30,14 @@ class TimelineHandler(timelineData: TimelineData) : InputListener {
 
     fun start() {
         console.log("Starting")
-        timeline.draw()
+        timeline.render()
     }
 
-    override fun onDragging(dist: Vector2D) {
+    override fun onDragging(dist: Point) {
         timeline.translate(-dist.x)
     }
 
-    override fun onScroll(scrollDist: Vector2D, mousePos: Vector2D) {
+    override fun onScroll(scrollDist: Point, mousePos: Point) {
         val zoomMultiplier = ZOOM_EXPONENTIAL_BASE.pow(scrollDist.y)
         timeline.zoom(mousePos.x, zoomMultiplier)
     }

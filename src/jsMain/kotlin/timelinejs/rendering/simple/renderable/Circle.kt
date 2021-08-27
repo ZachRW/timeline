@@ -1,9 +1,10 @@
-package timelinejs.rendering.renderable
+package timelinejs.rendering.simple.renderable
 
 import timelinejs.rendering.Renderer
-import timelinejs.rendering.datastructure.Point
-import timelinejs.rendering.style.ClosedShapeStyle
-import timelinejs.rendering.style.DrawMode
+import timelinejs.datastructure.Point
+import timelinejs.rendering.Renderable
+import timelinejs.rendering.compound.style.DrawMode
+import timelinejs.rendering.simple.style.ClosedShapeStyle
 
 class Circle(
     private val center: Point,

@@ -1,21 +1,22 @@
-package timelinejs.rendering.renderable
+package timelinejs.rendering.compound.renderable
 
 import timelinejs.rendering.Renderer
-import timelinejs.rendering.style.EventLabelStyle
+import timelinejs.datastructure.Point
+import timelinejs.rendering.compound.RenderParent
+import timelinejs.rendering.simple.renderable.Line
+import timelinejs.rendering.compound.style.EventLabelStyle
 
 class EventLabel(
     private val enclosedText: EnclosedText,
     private val stem: Line
-) : Renderable {
-    override fun render() {
-        stem.render()
-        enclosedText.render()
+) : RenderParent() {
+    init {
+        addChildren(stem, enclosedText)
     }
 
     companion object {
         fun create(
-            x: Double,
-            y: Double,
+            location: Point,
             textStr: String,
             stemX: Double,
             stemBaseY: Double,
@@ -23,8 +24,7 @@ class EventLabel(
             renderer: Renderer
         ): EventLabel {
             return EventLabelBuilder(
-                x,
-                y,
+                location,
                 textStr,
                 stemX,
                 stemBaseY,
@@ -34,8 +34,7 @@ class EventLabel(
         }
 
         private class EventLabelBuilder(
-            private val x: Double,
-            private val y: Double,
+            private val location: Point,
             private val textStr: String,
             private val stemX: Double,
             private val stemBaseY: Double,
@@ -52,21 +51,21 @@ class EventLabel(
             }
 
             private fun initEnclosedText() {
-                EnclosedText(x, y, textStr, style.enclosedTextStyle, renderer)
+                EnclosedText(location, textStr, style.enclosedTextStyle, renderer)
             }
 
             private fun initStem() {
-                val stemAttachY = if (stemBaseY < y) {
+                val stemAttachY = if (stemBaseY < location.y) {
                     enclosedText.bounds.bottom
                 } else {
                     enclosedText.bounds.top
                 }
 
                 stem = Line(
-                    x1 = stemX, y1 = stemAttachY,
-                    x2 = stemX, y2 = stemBaseY,
-                    style = style.stemStyle,
-                    renderer = renderer
+                    Point(stemX, stemAttachY),
+                    Point(stemX, stemBaseY),
+                    style.stemStyle,
+                    renderer
                 )
             }
         }

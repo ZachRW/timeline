@@ -1,4 +1,4 @@
-package timelinejs.rendering.renderable
+package timelinejs.rendering
 
 interface Renderable {
     fun render()

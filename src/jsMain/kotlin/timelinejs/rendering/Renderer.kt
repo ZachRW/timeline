@@ -1,9 +1,9 @@
 package timelinejs.rendering
 
-import timelinejs.rendering.datastructure.Point
-import timelinejs.rendering.datastructure.Rectangle
-import timelinejs.rendering.datastructure.Size
-import timelinejs.rendering.style.DrawMode
+import timelinejs.datastructure.Point
+import timelinejs.datastructure.Rectangle
+import timelinejs.datastructure.Size
+import timelinejs.rendering.compound.style.DrawMode
 import kotlin.math.PI
 import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 
@@ -27,18 +27,18 @@ class Renderer(private val renderContext: RenderContext, private val bounds: Rec
         get() = renderContext.getLineDash()
         set(value) = renderContext.setLineDash(value)
 
-    fun fillText(text: String, x: Double, y: Double) {
-        renderContext.fillText(text, x, y)
+    fun fillText(text: String, location: Point) {
+        renderContext.fillText(text, location.x, location.y)
     }
 
-    fun strokeText(text: String, x: Double, y: Double) {
-        renderContext.strokeText(text, x, y)
+    fun strokeText(text: String, location: Point) {
+        renderContext.strokeText(text, location.x, location.y)
     }
 
-    fun line(x1: Double, y1: Double, x2: Double, y2: Double) {
+    fun line(point1: Point, point2: Point) {
         stroke {
-            renderContext.moveTo(x1, y1)
-            renderContext.lineTo(x2, y2)
+            renderContext.moveTo(point1.x, point1.y)
+            renderContext.lineTo(point2.x, point2.y)
         }
     }
 

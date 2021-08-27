@@ -1,4 +1,4 @@
-package timelinejs.rendering.style
+package timelinejs.rendering.simple.style
 
 import org.w3c.dom.BUTT
 import org.w3c.dom.CanvasLineCap

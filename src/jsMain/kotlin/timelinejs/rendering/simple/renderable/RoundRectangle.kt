@@ -1,10 +1,10 @@
-package timelinejs.rendering.renderable
+package timelinejs.rendering.simple.renderable
 
 import timelinejs.rendering.Renderer
-import timelinejs.rendering.datastructure.Rectangle
-import timelinejs.rendering.style.ClosedShapeStyle
-import timelinejs.rendering.style.DrawMode
-import timelinejs.rendering.style.RoundRectangleStyle
+import timelinejs.datastructure.Rectangle
+import timelinejs.rendering.Renderable
+import timelinejs.rendering.compound.style.DrawMode
+import timelinejs.rendering.compound.style.RoundRectangleStyle
 
 class RoundRectangle(
     private val bounds: Rectangle,

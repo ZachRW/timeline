@@ -1,4 +1,4 @@
-package timelinejs.rendering.datastructure
+package timelinejs.datastructure
 
 data class Rectangle(
     val x: Double,
@@ -6,14 +6,27 @@ data class Rectangle(
     val width: Double,
     val height: Double
 ) {
+    constructor(x: Number, y: Number, width: Number, height: Number)
+            : this(x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble())
+
     constructor(location: Point, size: Size)
             : this(location.x, location.y, size.width, size.height)
 
     companion object {
         val EMPTY = Rectangle(0.0, 0.0, 0.0, 0.0)
 
-        fun fromEdges(left: Double, top: Double, right: Double, bottom: Double) =
-            Rectangle(left, top, right - left, bottom - top)
+        fun fromEdges(left: Number, top: Number, right: Number, bottom: Number): Rectangle {
+            val leftDouble = left.toDouble()
+            val topDouble = top.toDouble()
+            val rightDouble = right.toDouble()
+            val bottomDouble = bottom.toDouble()
+            return Rectangle(
+                x = leftDouble,
+                y = topDouble,
+                width = rightDouble - leftDouble,
+                height = bottomDouble - topDouble
+            )
+        }
     }
 
     val location: Point get() = Point(x, y)

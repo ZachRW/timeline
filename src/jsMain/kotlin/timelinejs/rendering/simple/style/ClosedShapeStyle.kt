@@ -1,4 +1,6 @@
-package timelinejs.rendering.style
+package timelinejs.rendering.simple.style
+
+import timelinejs.rendering.compound.style.DrawMode
 
 open class ClosedShapeStyle(
     val jsStyle: dynamic = "black",

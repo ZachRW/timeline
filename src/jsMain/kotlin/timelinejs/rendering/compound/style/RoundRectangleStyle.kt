@@ -1,4 +1,6 @@
-package timelinejs.rendering.style
+package timelinejs.rendering.compound.style
+
+import timelinejs.rendering.simple.style.ClosedShapeStyle
 
 class RoundRectangleStyle(
     val radius: Double,

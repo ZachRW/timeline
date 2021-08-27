@@ -15,7 +15,7 @@ data class TimelineData(
 data class Series(
     val namedDateRanges: List<NamedDateRange>,
     val events: List<Event>,
-    val color: String?
+    val color: String? = null
 )
 
 @Serializable

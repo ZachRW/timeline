@@ -1,6 +1,6 @@
 package timelinejs.config
 
-import timelinejs.rendering.style.TextStyle
+import timelinejs.rendering.simple.style.TextStyle
 
 data class DataConfig(
     val textConfig: TextStyle
@@ -8,7 +8,7 @@ data class DataConfig(
     companion object {
         val DEFAULT = DataConfig(
             textConfig = TextStyle(
-                color = "black",
+                jsStyle = "black",
                 font = "10px"
             )
         )
