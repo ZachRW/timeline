@@ -1,17 +1,17 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 
-val kotlinVersion = "1.5.21"
+val kotlinVersion = "1.5.30"
 val serializationVersion = "1.2.2"
-val ktorVersion = "1.6.1"
+val ktorVersion = "1.6.3"
 val logbackVersion = "1.2.5"
 val kmongoVersion = "4.2.8"
-val reactWrappersVersion = "17.0.2-pre.223-kotlin-$kotlinVersion"
+val reactWrappersVersion = "17.0.2-pre.240-kotlin-$kotlinVersion"
 
 plugins {
-    kotlin("multiplatform") version "1.5.21"
+    kotlin("multiplatform") version "1.5.30"
     application
-    kotlin("plugin.serialization") version "1.5.21"
+    kotlin("plugin.serialization") version "1.5.30"
 }
 
 group = "com.zachrobweig"

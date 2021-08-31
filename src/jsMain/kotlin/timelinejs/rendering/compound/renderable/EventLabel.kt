@@ -1,5 +1,6 @@
 package timelinejs.rendering.compound.renderable
 
+import timelinejs.JsSeries
 import timelinejs.rendering.Renderer
 import timelinejs.datastructure.Point
 import timelinejs.rendering.compound.RenderParent
@@ -8,10 +9,17 @@ import timelinejs.rendering.compound.style.EventLabelStyle
 
 class EventLabel(
     enclosedText: EnclosedText,
-    stem: Line
+    stem: Line,
+    private val series: JsSeries
 ) : RenderParent() {
     init {
         children = mutableListOf(stem, enclosedText)
+    }
+
+    override fun render() {
+        if (series.visible) {
+            renderChildren()
+        }
     }
 
     companion object {
@@ -21,6 +29,7 @@ class EventLabel(
             stemX: Double,
             stemBaseY: Double,
             style: EventLabelStyle,
+            series: JsSeries,
             renderer: Renderer
         ): EventLabel {
             return EventLabelBuilder(
@@ -29,6 +38,7 @@ class EventLabel(
                 stemX,
                 stemBaseY,
                 style,
+                series,
                 renderer
             ).build()
         }
@@ -39,6 +49,7 @@ class EventLabel(
             private val stemX: Double,
             private val stemBaseY: Double,
             private val style: EventLabelStyle,
+            private val series: JsSeries,
             private val renderer: Renderer
         ) {
             private lateinit var enclosedText: EnclosedText
@@ -47,7 +58,7 @@ class EventLabel(
             fun build(): EventLabel {
                 initEnclosedText()
                 initStem()
-                return EventLabel(enclosedText, stem)
+                return EventLabel(enclosedText, stem, series)
             }
 
             private fun initEnclosedText() {
