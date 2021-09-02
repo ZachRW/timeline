@@ -4,34 +4,24 @@ import timelinejs.*
 import timelinejs.rendering.Renderer
 import timelinejs.rendering.compound.RenderParent
 
-class DataRenderer(
-    private val data: JsTimelineData,
+class DataRenderer private constructor(
+    private val eventLabels: List<EventLabel>,
     private val renderer: Renderer
 ) : RenderParent() {
     init {
-        initSeriesList()
+        children.addAll(eventLabels)
     }
 
-    private fun initSeriesList() {
-        for (series in data.seriesList) {
-            initSeries(series)
+    companion object {
+        fun create(data: JsTimelineData, renderer: Renderer) =
+            DataRendererBuilder(data, renderer).build()
+
+        private class DataRendererBuilder(
+            private val data: JsTimelineData,
+            private val renderer: Renderer
+        ) {
+            fun build(): DataRenderer {
+            }
         }
-    }
-
-    private fun initSeries(series: JsSeries) {
-        for (event in series.events) {
-            createEventLabel(event, series.color)
-        }
-        for (namedDateRange in series.namedDateRanges) {
-            createDateRangeLabel(namedDateRange, series.color)
-        }
-    }
-
-    private fun createEventLabel(event: JsEvent, color: String) {
-        TODO()
-    }
-
-    private fun createDateRangeLabel(namedDateRange: JsNamedDateRange, color: String) {
-        // TODO
     }
 }

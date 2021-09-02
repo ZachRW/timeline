@@ -4,27 +4,71 @@ import timelinejs.rendering.compound.style.EnclosedTextStyle
 import timelinejs.rendering.Renderer
 import timelinejs.datastructure.Point
 import timelinejs.datastructure.Rectangle
+import timelinejs.datastructure.Size
 import timelinejs.rendering.compound.RenderParent
 import timelinejs.rendering.simple.renderable.RoundRectangle
 import timelinejs.rendering.simple.renderable.Text
+import timelinejs.rendering.simple.renderable.TextBuilder
+import timelinejs.rendering.simple.style.TextStyle
 
 class EnclosedText(
-    location: Point,
-    textStr: String,
-    style: EnclosedTextStyle,
-    renderer: Renderer
+    roundRect: RoundRectangle,
+    text: Text
 ) : RenderParent() {
-    private val roundRect: RoundRectangle
-    private val text: Text
-    val bounds: Rectangle
+    val bounds by roundRect::bounds
 
     init {
-        val roundRectLocation = location.translate(style.textPadding, style.textPadding)
-        val size = renderer.textSize(textStr)
-        bounds = Rectangle(roundRectLocation, size)
-        text = Text(location, textStr, style.textStyle, renderer)
-        roundRect = RoundRectangle(bounds, style.roundRectStyle, renderer)
-
         children = mutableListOf(roundRect, text)
+    }
+}
+
+class EnclosedTextBuilder {
+    private var location: Point? = null
+    private var style: EnclosedTextStyle? = null
+    private var renderer: Renderer? = null
+
+    private val textBuilder = TextBuilder()
+
+    val size: Size
+        get() {
+            val style = checkNotNull(style)
+            return textBuilder.size + Size(style.textPadding, style.textPadding) * 2.0
+        }
+    val bounds: Rectangle
+        get() {
+            val location = checkNotNull(location)
+            return Rectangle(location, size)
+        }
+
+    fun setLocation(location: Point) {
+        val style = checkNotNull(style)
+        this.location = location
+
+        val textLocation = location.translate(style.textPadding, style.textPadding)
+        textBuilder.setLocation(textLocation)
+    }
+
+    fun setText(text: String) {
+        textBuilder.setText(text)
+    }
+
+    fun setStyle(style: EnclosedTextStyle) {
+        this.style = style
+        textBuilder.setStyle(style.textStyle)
+    }
+
+    fun setRenderer(renderer: Renderer) {
+        this.renderer = renderer
+        textBuilder.setRenderer(renderer)
+    }
+
+    fun build(): EnclosedText {
+        val style = checkNotNull(style)
+        val renderer = checkNotNull(renderer)
+
+        val roundRect = RoundRectangle(bounds, style.roundRectStyle, renderer)
+        val text = textBuilder.build()
+
+        return EnclosedText(roundRect, text)
     }
 }

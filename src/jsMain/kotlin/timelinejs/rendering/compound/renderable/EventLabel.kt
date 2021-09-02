@@ -7,7 +7,7 @@ import timelinejs.rendering.compound.RenderParent
 import timelinejs.rendering.simple.renderable.Line
 import timelinejs.rendering.compound.style.EventLabelStyle
 
-class EventLabel(
+class EventLabel internal constructor(
     enclosedText: EnclosedText,
     stem: Line,
     private val series: JsSeries
@@ -21,64 +21,74 @@ class EventLabel(
             renderChildren()
         }
     }
+}
 
-    companion object {
-        fun create(
-            location: Point,
-            textStr: String,
-            stemX: Double,
-            stemBaseY: Double,
-            style: EventLabelStyle,
-            series: JsSeries,
-            renderer: Renderer
-        ): EventLabel {
-            return EventLabelBuilder(
-                location,
-                textStr,
-                stemX,
-                stemBaseY,
-                style,
-                series,
-                renderer
-            ).build()
-        }
+class EventLabelBuilder {
+//    private var location: Point? = null
+//    private var textStr: String? = null
+    private var stemX: Double? = null
+    private var stemBaseY: Double? = null
+    private var style: EventLabelStyle? = null
+    private var series: JsSeries? = null
+    private var renderer: Renderer? = null
 
-        private class EventLabelBuilder(
-            private val location: Point,
-            private val textStr: String,
-            private val stemX: Double,
-            private val stemBaseY: Double,
-            private val style: EventLabelStyle,
-            private val series: JsSeries,
-            private val renderer: Renderer
-        ) {
-            private lateinit var enclosedText: EnclosedText
-            private lateinit var stem: Line
+    private val enclosedTextBuilder = EnclosedTextBuilder()
 
-            fun build(): EventLabel {
-                initEnclosedText()
-                initStem()
-                return EventLabel(enclosedText, stem, series)
-            }
-
-            private fun initEnclosedText() {
-                EnclosedText(location, textStr, style.enclosedTextStyle, renderer)
-            }
-
-            private fun initStem() {
-                val stemAttachY = if (stemBaseY < location.y) {
-                    enclosedText.bounds.bottom
-                } else {
-                    enclosedText.bounds.top
-                }
-
-                stem = Line(
-                    Point(stemX, stemAttachY),
-                    Point(stemX, stemBaseY),
-                    style.stemStyle,
-                    renderer
-                )
-            }
-        }
+    fun setLocation(location: Point) {
+        enclosedTextBuilder.setLocation(location)
     }
+
+    fun setText(text: String) {
+        enclosedTextBuilder.setText(text)
+    }
+
+    fun setStemX(stemX: Double) {
+        this.stemX = stemX
+    }
+
+    fun setStemBaseY(stemBaseY: Double) {
+        this.stemBaseY = stemBaseY
+    }
+
+    fun setStyle(style: EventLabelStyle) {
+        this.style = style
+        enclosedTextBuilder.setStyle(style.enclosedTextStyle)
+    }
+
+    fun setSeries(series: JsSeries) {
+        this.series = series
+    }
+
+    fun setRenderer(renderer: Renderer) {
+        this.renderer = renderer
+    }
+
+    fun build(): EventLabel {
+        TODO()
+    }
+
+//    fun build(): EventLabel {
+//        initEnclosedText()
+//        initStem()
+//        return EventLabel(enclosedText, stem, series)
+//    }
+//
+//    private fun initEnclosedText() {
+//        EnclosedText(location, textStr, style.enclosedTextStyle, renderer)
+//    }
+//
+//    private fun initStem() {
+//        val stemAttachY = if (stemBaseY < location.y) {
+//            enclosedText.bounds.bottom
+//        } else {
+//            enclosedText.bounds.top
+//        }
+//
+//        stem = Line(
+//            Point(stemX, stemAttachY),
+//            Point(stemX, stemBaseY),
+//            style.stemStyle,
+//            renderer
+//        )
+//    }
 }

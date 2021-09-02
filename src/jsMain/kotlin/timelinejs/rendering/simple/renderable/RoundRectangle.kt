@@ -7,7 +7,7 @@ import timelinejs.rendering.compound.style.DrawMode
 import timelinejs.rendering.compound.style.RoundRectangleStyle
 
 class RoundRectangle(
-    private val bounds: Rectangle,
+    val bounds: Rectangle,
     private val style: RoundRectangleStyle,
     private val renderer: Renderer
 ) : Renderable {
