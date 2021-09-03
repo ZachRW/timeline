@@ -9,16 +9,35 @@ import timelinejs.rendering.compound.RenderParent
 import timelinejs.rendering.simple.renderable.RoundRectangle
 import timelinejs.rendering.simple.renderable.Text
 import timelinejs.rendering.simple.renderable.TextBuilder
-import timelinejs.rendering.simple.style.TextStyle
 
 class EnclosedText(
-    roundRect: RoundRectangle,
+    private val roundRect: RoundRectangle,
     text: Text
 ) : RenderParent() {
     val bounds by roundRect::bounds
 
     init {
         children = mutableListOf(roundRect, text)
+    }
+
+    companion object {
+        fun create(
+            location: Point,
+            textStr: String,
+            style: EnclosedTextStyle,
+            renderer: Renderer
+        ): EnclosedText {
+            val paddingOffset = Point(style.textPadding, style.textPadding)
+
+            val textLocation = location + paddingOffset
+            val text = Text(textLocation, textStr, style.textStyle, renderer)
+
+            val size = text.size + Size(paddingOffset) * 2.0
+            val bounds = Rectangle(location, size)
+            val roundRect = RoundRectangle(bounds, style.roundRectStyle, renderer)
+
+            return EnclosedText(roundRect, text)
+        }
     }
 }
 

@@ -1,31 +1,57 @@
 package timelinejs.rendering.compound.renderable
 
-import timelinejs.JsSeries
 import timelinejs.rendering.Renderer
 import timelinejs.datastructure.Point
-import timelinejs.rendering.compound.RenderParent
-import timelinejs.rendering.simple.renderable.Line
+import timelinejs.datastructure.Rectangle
+import timelinejs.rendering.Renderable
 import timelinejs.rendering.compound.style.EventLabelStyle
+import timelinejs.rendering.simple.renderable.Line
 
-class EventLabel internal constructor(
-    enclosedText: EnclosedText,
-    stem: Line,
-    private val series: JsSeries
-) : RenderParent() {
-    init {
-        children = mutableListOf(stem, enclosedText)
-    }
+class EventLabel(
+    private val textStr: String,
+    initLocation: Point,
+    initStemX: Double,
+    private val stemBaseY: Double,
+    private val style: EventLabelStyle,
+    private val renderer: Renderer
+) : Renderable {
+    private var location: Point = initLocation
+    private var stemX: Double = initStemX
 
     override fun render() {
-        if (series.visible) {
-            renderChildren()
+        val enclosedText = createEnclosedText()
+        val stem = createStem(enclosedText.bounds)
+
+        stem.render()
+        enclosedText.render()
+    }
+
+    private fun createEnclosedText() =
+        EnclosedText.create(
+            location,
+            textStr,
+            style.enclosedTextStyle,
+            renderer
+        )
+
+    private fun createStem(enclosedTextBounds: Rectangle): Line {
+        val stemAttachY = if (stemBaseY < enclosedTextBounds.y) {
+            enclosedTextBounds.bottom
+        } else {
+            enclosedTextBounds.top
         }
+
+        return Line(
+            Point(stemX, stemBaseY),
+            Point(stemX, stemAttachY),
+            style.stemStyle,
+            renderer
+        )
     }
 }
 
+/*
 class EventLabelBuilder {
-//    private var location: Point? = null
-//    private var textStr: String? = null
     private var stemX: Double? = null
     private var stemBaseY: Double? = null
     private var style: EventLabelStyle? = null
@@ -64,31 +90,30 @@ class EventLabelBuilder {
     }
 
     fun build(): EventLabel {
-        TODO()
+        val series = checkNotNull(series)
+        val enclosedText = enclosedTextBuilder.build()
+        val stem = buildStem()
+        return EventLabel(enclosedText, stem, series)
     }
 
-//    fun build(): EventLabel {
-//        initEnclosedText()
-//        initStem()
-//        return EventLabel(enclosedText, stem, series)
-//    }
-//
-//    private fun initEnclosedText() {
-//        EnclosedText(location, textStr, style.enclosedTextStyle, renderer)
-//    }
-//
-//    private fun initStem() {
-//        val stemAttachY = if (stemBaseY < location.y) {
-//            enclosedText.bounds.bottom
-//        } else {
-//            enclosedText.bounds.top
-//        }
-//
-//        stem = Line(
-//            Point(stemX, stemAttachY),
-//            Point(stemX, stemBaseY),
-//            style.stemStyle,
-//            renderer
-//        )
-//    }
+    private fun buildStem(): Line {
+        val stemX = checkNotNull(stemX)
+        val stemBaseY = checkNotNull(stemBaseY)
+        val style = checkNotNull(style)
+        val renderer = checkNotNull(renderer)
+
+        val stemAttachY = if (stemBaseY < enclosedTextBuilder.bounds.y) {
+            enclosedTextBuilder.bounds.bottom
+        } else {
+            enclosedTextBuilder.bounds.top
+        }
+
+        return Line(
+            Point(stemX, stemAttachY),
+            Point(stemX, stemBaseY),
+            style.stemStyle,
+            renderer
+        )
+    }
 }
+*/

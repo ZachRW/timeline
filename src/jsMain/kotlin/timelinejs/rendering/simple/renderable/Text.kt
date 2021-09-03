@@ -14,6 +14,13 @@ class Text(
     private val style: TextStyle,
     private val renderer: Renderer
 ) : Renderable {
+    val size: Size
+
+    init {
+        style.applyStyle(renderer)
+        size = renderer.textSize(text)
+    }
+
     override fun render() {
         style.applyStyle(renderer)
         fillOrStroke()
