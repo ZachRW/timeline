@@ -13,9 +13,9 @@ import kotlin.js.Date
 
 class DateAxis(
     private val y: Double,
-    private val renderer: Renderer,
+    private val style: DateAxisStyle,
     private val view: View,
-    private val style: DateAxisStyle
+    private val renderer: Renderer
 ) : RenderParent() {
     private val axisLine = Line(
         Point(0.0, y),

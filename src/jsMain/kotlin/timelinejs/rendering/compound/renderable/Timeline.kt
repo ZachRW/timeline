@@ -17,14 +17,14 @@ class Timeline(
     style: TimelineStyle = TimelineStyle.DEFAULT
 ) : RenderParent() {
     private val renderer = Renderer(renderContext, bounds)
-    private val data: JsTimelineData = commonData.toJsTimelineData(style.seriesColorPalette)
+    private val data: JsTimelineData = commonData.toJsTimelineData()
     private val view: MutableView
     private val dateAxis: DateAxis
 
     init {
         val (start, end) = data.dateRange
         view = MutableView(start, end, bounds.width)
-        dateAxis = DateAxis(bounds.centerY, renderer, view, style.dateAxisStyle)
+        dateAxis = DateAxis(bounds.centerY, style.dateAxisStyle, view, renderer)
 
         children += dateAxis
     }

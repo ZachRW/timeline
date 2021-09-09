@@ -19,7 +19,7 @@ class JsTimelineData(val seriesList: List<JsSeries>) {
         start..end
     }
 
-    val dates: List<Date> by lazy {
+    private val dates: List<Date> by lazy {
         val dates = mutableListOf<Date>()
         for (series in seriesList) {
             for ((_, date) in series.events) {
@@ -36,11 +36,8 @@ class JsTimelineData(val seriesList: List<JsSeries>) {
 
 class JsSeries(
     val namedDateRanges: List<JsNamedDateRange>,
-    val events: List<JsEvent>,
-    val color: String
-) {
-    var visible = true
-}
+    val events: List<JsEvent>
+)
 
 data class JsNamedDateRange(
     val name: String,
@@ -53,17 +50,15 @@ data class JsEvent(
     val date: Date
 )
 
-fun TimelineData.toJsTimelineData(seriesColorPalette: SeriesColorPalette): JsTimelineData {
-    val seriesColorProvider = SeriesColorProvider(seriesColorPalette)
-    val jsSeriesList = seriesList.map { it.toJsSeries(seriesColorProvider) }
+fun TimelineData.toJsTimelineData(): JsTimelineData {
+    val jsSeriesList = seriesList.map { it.toJsSeries() }
     return JsTimelineData(jsSeriesList)
 }
 
-private fun Series.toJsSeries(seriesColorProvider: SeriesColorProvider): JsSeries {
+private fun Series.toJsSeries(): JsSeries {
     val jsNamedDateRanges = namedDateRanges.map { it.toJsNamedDateRange() }
     val jsEvents = events.map { it.toJsEvent() }
-    val jsColor = color ?: seriesColorProvider.next()
-    return JsSeries(jsNamedDateRanges, jsEvents, jsColor)
+    return JsSeries(jsNamedDateRanges, jsEvents)
 }
 
 private fun NamedDateRange.toJsNamedDateRange() =

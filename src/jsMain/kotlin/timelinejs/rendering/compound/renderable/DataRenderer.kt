@@ -5,23 +5,18 @@ import timelinejs.rendering.Renderer
 import timelinejs.rendering.compound.RenderParent
 
 class DataRenderer private constructor(
-    private val eventLabels: List<EventLabel>,
+    private val data: JsTimelineData,
+    private val view: View,
     private val renderer: Renderer
 ) : RenderParent() {
-    init {
-        children.addAll(eventLabels)
+    private val seriesViews: List<SeriesView> = data.toSeriesViews()
+
+    private fun JsTimelineData.toSeriesViews(): List<SeriesView> {
     }
 
-    companion object {
-        fun create(data: JsTimelineData, renderer: Renderer) =
-            DataRendererBuilder(data, renderer).build()
-
-        private class DataRendererBuilder(
-            private val data: JsTimelineData,
-            private val renderer: Renderer
-        ) {
-            fun build(): DataRenderer {
-            }
-        }
+    private class SeriesView(val eventViews: List<EventView>, val color: String) {
+        var visible = true
     }
+
+    private class EventView(val seriesView: SeriesView, val label: EventLabel)
 }

@@ -9,11 +9,11 @@ import timelinejs.rendering.simple.renderable.Line
 
 class EventLabel(
     private val textStr: String,
-    initLocation: Point,
-    initStemX: Double,
     private val stemBaseY: Double,
     private val style: EventLabelStyle,
-    private val renderer: Renderer
+    private val renderer: Renderer,
+    initLocation: Point = Point.EMPTY,
+    initStemX: Double = 0.0
 ) : Renderable {
     private var location: Point = initLocation
     private var stemX: Double = initStemX
