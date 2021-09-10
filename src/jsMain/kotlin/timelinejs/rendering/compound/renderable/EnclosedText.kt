@@ -2,8 +2,8 @@ package timelinejs.rendering.compound.renderable
 
 import timelinejs.rendering.compound.style.EnclosedTextStyle
 import timelinejs.rendering.Renderer
-import timelinejs.datastructure.Point
-import timelinejs.datastructure.Rectangle
+import timelinejs.datastructure.AbsolutePoint
+import timelinejs.datastructure.AbsoluteRectangle
 import timelinejs.datastructure.Size
 import timelinejs.rendering.compound.RenderParent
 import timelinejs.rendering.simple.renderable.RoundRectangle
@@ -22,18 +22,18 @@ class EnclosedText(
 
     companion object {
         fun create(
-            location: Point,
+            location: AbsolutePoint,
             textStr: String,
             style: EnclosedTextStyle,
             renderer: Renderer
         ): EnclosedText {
-            val paddingOffset = Point(style.textPadding, style.textPadding)
+            val paddingOffset = AbsolutePoint(style.textPadding, style.textPadding)
 
             val textLocation = location + paddingOffset
             val text = Text(textLocation, textStr, style.textStyle, renderer)
 
             val size = text.size + Size(paddingOffset) * 2.0
-            val bounds = Rectangle(location, size)
+            val bounds = AbsoluteRectangle(location, size)
             val roundRect = RoundRectangle(bounds, style.roundRectStyle, renderer)
 
             return EnclosedText(roundRect, text)
@@ -42,7 +42,7 @@ class EnclosedText(
 }
 
 class EnclosedTextBuilder {
-    private var location: Point? = null
+    private var location: AbsolutePoint? = null
     private var style: EnclosedTextStyle? = null
     private var renderer: Renderer? = null
 
@@ -53,13 +53,13 @@ class EnclosedTextBuilder {
             val style = checkNotNull(style)
             return textBuilder.size + Size(style.textPadding, style.textPadding) * 2.0
         }
-    val bounds: Rectangle
+    val bounds: AbsoluteRectangle
         get() {
             val location = checkNotNull(location)
-            return Rectangle(location, size)
+            return AbsoluteRectangle(location, size)
         }
 
-    fun setLocation(location: Point) {
+    fun setLocation(location: AbsolutePoint) {
         val style = checkNotNull(style)
         this.location = location
 

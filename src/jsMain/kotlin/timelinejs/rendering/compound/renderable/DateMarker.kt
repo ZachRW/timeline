@@ -1,14 +1,14 @@
 package timelinejs.rendering.compound.renderable
 
 import timelinejs.rendering.Renderer
-import timelinejs.datastructure.Point
+import timelinejs.datastructure.AbsolutePoint
 import timelinejs.rendering.compound.RenderParent
 import timelinejs.rendering.simple.renderable.Circle
 import timelinejs.rendering.simple.renderable.Text
 import timelinejs.rendering.compound.style.DateMarkerStyle
 
 class DateMarker(
-    location: Point,
+    location: AbsolutePoint,
     dateStr: String,
     style: DateMarkerStyle,
     renderer: Renderer

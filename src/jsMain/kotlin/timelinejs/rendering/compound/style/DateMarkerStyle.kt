@@ -20,7 +20,7 @@ class DateMarkerStyle(
             ),
             textStyle = TextStyle(
                 jsStyle = "black",
-                font = "10px",
+                font = "10px sans-serif",
                 drawMode = DrawMode.FILL,
                 textAlign = CanvasTextAlign.CENTER
             ),

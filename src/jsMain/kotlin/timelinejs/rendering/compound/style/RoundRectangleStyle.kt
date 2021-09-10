@@ -6,6 +6,6 @@ class RoundRectangleStyle(
     val radius: Double,
     jsStyle: dynamic,
     drawMode: DrawMode,
-    lineWidth: Double,
-    lineDash: Collection<Double>
+    lineWidth: Double = 0.0,
+    lineDash: Collection<Double> = listOf()
 ) : ClosedShapeStyle(jsStyle, drawMode, lineWidth, lineDash)

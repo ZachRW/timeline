@@ -2,7 +2,7 @@ import org.w3c.dom.GlobalEventHandlers
 import org.w3c.dom.HTMLCanvasElement
 import org.w3c.dom.events.MouseEvent
 import org.w3c.dom.events.WheelEvent
-import timelinejs.datastructure.Point
+import timelinejs.datastructure.AbsolutePoint
 
 class InputHandler(
     private val listener: InputListener,
@@ -10,8 +10,8 @@ class InputHandler(
     documentHandler: GlobalEventHandlers
 ) {
     private var dragging = false
-    private var dragStartPos = Point.EMPTY
-    private var dragPrevPos = Point.EMPTY
+    private var dragStartPos = AbsolutePoint.EMPTY
+    private var dragPrevPos = AbsolutePoint.EMPTY
 
     init {
         with(canvas) {
@@ -53,13 +53,13 @@ class InputHandler(
 
     private fun wheel(wheelEvent: WheelEvent) {
         wheelEvent.preventDefault()
-        val scrollDist = Point(wheelEvent.deltaX, wheelEvent.deltaY)
+        val scrollDist = AbsolutePoint(wheelEvent.deltaX, wheelEvent.deltaY)
         listener.onScroll(scrollDist, wheelEvent.mousePos())
     }
 
-    private fun MouseEvent.mousePos(): Point {
+    private fun MouseEvent.mousePos(): AbsolutePoint {
         val canvasBounds = canvas.getBoundingClientRect()
-        return Point(
+        return AbsolutePoint(
             clientX - canvasBounds.left,
             clientY - canvasBounds.top
         )
@@ -67,8 +67,8 @@ class InputHandler(
 }
 
 interface InputListener {
-    fun onDragging(dist: Point) {}
-    fun onDrag(dist: Point) {}
+    fun onDragging(dist: AbsolutePoint) {}
+    fun onDrag(dist: AbsolutePoint) {}
     fun onRightClick() {}
-    fun onScroll(scrollDist: Point, mousePos: Point) {}
+    fun onScroll(scrollDist: AbsolutePoint, mousePos: AbsolutePoint) {}
 }

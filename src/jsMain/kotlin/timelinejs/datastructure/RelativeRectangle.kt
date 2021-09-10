@@ -1,4 +1,4 @@
 package timelinejs.datastructure
 
-interface Point {
+class RelativeRectangle {
 }

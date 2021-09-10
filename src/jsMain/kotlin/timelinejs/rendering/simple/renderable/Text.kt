@@ -1,15 +1,15 @@
 package timelinejs.rendering.simple.renderable
 
 import timelinejs.rendering.Renderer
-import timelinejs.datastructure.Point
-import timelinejs.datastructure.Rectangle
+import timelinejs.datastructure.AbsolutePoint
+import timelinejs.datastructure.AbsoluteRectangle
 import timelinejs.datastructure.Size
 import timelinejs.rendering.Renderable
 import timelinejs.rendering.simple.style.TextStyle
 import timelinejs.rendering.compound.style.DrawMode
 
 class Text(
-    private val location: Point,
+    private val location: AbsolutePoint,
     private val text: String,
     private val style: TextStyle,
     private val renderer: Renderer
@@ -37,7 +37,7 @@ class Text(
 }
 
 class TextBuilder {
-    private var location: Point? = null
+    private var location: AbsolutePoint? = null
     private var text: String? = null
     private var style: TextStyle? = null
     private var renderer: Renderer? = null
@@ -51,13 +51,13 @@ class TextBuilder {
             style.applyStyle(renderer)
             return renderer.textSize(text)
         }
-    val bounds: Rectangle
+    val bounds: AbsoluteRectangle
         get() {
             val location = checkNotNull(location)
-            return Rectangle(location, size)
+            return AbsoluteRectangle(location, size)
         }
 
-    fun setLocation(location: Point) {
+    fun setLocation(location: AbsolutePoint) {
         this.location = location
     }
 

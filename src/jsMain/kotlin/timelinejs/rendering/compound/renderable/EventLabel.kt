@@ -1,8 +1,8 @@
 package timelinejs.rendering.compound.renderable
 
 import timelinejs.rendering.Renderer
-import timelinejs.datastructure.Point
-import timelinejs.datastructure.Rectangle
+import timelinejs.datastructure.AbsolutePoint
+import timelinejs.datastructure.AbsoluteRectangle
 import timelinejs.rendering.Renderable
 import timelinejs.rendering.compound.style.EventLabelStyle
 import timelinejs.rendering.simple.renderable.Line
@@ -12,10 +12,10 @@ class EventLabel(
     private val stemBaseY: Double,
     private val style: EventLabelStyle,
     private val renderer: Renderer,
-    initLocation: Point = Point.EMPTY,
+    initLocation: AbsolutePoint = AbsolutePoint.EMPTY,
     initStemX: Double = 0.0
 ) : Renderable {
-    private var location: Point = initLocation
+    private var location: AbsolutePoint = initLocation
     private var stemX: Double = initStemX
 
     override fun render() {
@@ -34,7 +34,7 @@ class EventLabel(
             renderer
         )
 
-    private fun createStem(enclosedTextBounds: Rectangle): Line {
+    private fun createStem(enclosedTextBounds: AbsoluteRectangle): Line {
         val stemAttachY = if (stemBaseY < enclosedTextBounds.y) {
             enclosedTextBounds.bottom
         } else {
@@ -42,8 +42,8 @@ class EventLabel(
         }
 
         return Line(
-            Point(stemX, stemBaseY),
-            Point(stemX, stemAttachY),
+            AbsolutePoint(stemX, stemBaseY),
+            AbsolutePoint(stemX, stemAttachY),
             style.stemStyle,
             renderer
         )

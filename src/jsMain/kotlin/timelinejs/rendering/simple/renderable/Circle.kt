@@ -1,13 +1,13 @@
 package timelinejs.rendering.simple.renderable
 
 import timelinejs.rendering.Renderer
-import timelinejs.datastructure.Point
+import timelinejs.datastructure.AbsolutePoint
 import timelinejs.rendering.Renderable
 import timelinejs.rendering.compound.style.DrawMode
 import timelinejs.rendering.simple.style.ClosedShapeStyle
 
 class Circle(
-    private val center: Point,
+    private val center: AbsolutePoint,
     private val radius: Double,
     private val style: ClosedShapeStyle,
     private val renderer: Renderer
