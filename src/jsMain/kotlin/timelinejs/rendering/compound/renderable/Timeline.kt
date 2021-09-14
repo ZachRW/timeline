@@ -5,7 +5,7 @@ import timelinejs.JsTimelineData
 import timelinejs.MutableView
 import timelinejs.rendering.compound.style.TimelineStyle
 import timelinejs.rendering.Renderer
-import timelinejs.datastructure.AbsoluteRectangle
+import timelinejs.datastructure.Rectangle
 import timelinejs.rendering.compound.RenderParent
 import timelinejs.toJsTimelineData
 import org.w3c.dom.CanvasRenderingContext2D as RenderContext
@@ -13,7 +13,7 @@ import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 class Timeline(
     renderContext: RenderContext,
     commonData: TimelineData,
-    bounds: AbsoluteRectangle,
+    bounds: Rectangle,
     style: TimelineStyle = TimelineStyle.DEFAULT
 ) : RenderParent() {
     private val renderer: Renderer

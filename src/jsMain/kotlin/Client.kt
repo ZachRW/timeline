@@ -7,7 +7,7 @@ import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 import org.w3c.dom.HTMLCanvasElement
 import timelinejs.rendering.compound.renderable.Timeline
 import timelinejs.datastructure.AbsolutePoint
-import timelinejs.datastructure.AbsoluteRectangle
+import timelinejs.datastructure.Rectangle
 import kotlin.math.pow
 
 private const val ZOOM_EXPONENTIAL_BASE: Double = 0.9990473522592097
@@ -22,7 +22,7 @@ class TimelineHandler(timelineData: TimelineData) : InputListener {
         timeline = Timeline(
             ctx,
             timelineData,
-            bounds = AbsoluteRectangle(0, 0, canvas.width, canvas.height)
+            bounds = Rectangle.createAbsolute(0, 0, canvas.width, canvas.height)
         )
 
         InputHandler(this, canvas, document)

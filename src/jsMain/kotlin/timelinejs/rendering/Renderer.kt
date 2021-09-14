@@ -1,13 +1,13 @@
 package timelinejs.rendering
 
-import timelinejs.datastructure.AbsolutePoint
-import timelinejs.datastructure.AbsoluteRectangle
+import timelinejs.datastructure.Rectangle
+import timelinejs.datastructure.Point
 import timelinejs.datastructure.Size
 import timelinejs.rendering.compound.style.DrawMode
 import kotlin.math.PI
 import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 
-class Renderer(private val renderContext: RenderContext, private val bounds: AbsoluteRectangle) {
+class Renderer(private val renderContext: RenderContext, private val bounds: Rectangle) {
     init {
         if (!bounds.location.isEmpty()) {
             error("Render bounds must be at (0, 0)")
@@ -27,15 +27,15 @@ class Renderer(private val renderContext: RenderContext, private val bounds: Abs
         get() = renderContext.getLineDash()
         set(value) = renderContext.setLineDash(value)
 
-    fun fillText(text: String, location: AbsolutePoint) {
+    fun fillText(text: String, location: Point) {
         renderContext.fillText(text, location.x, location.y)
     }
 
-    fun strokeText(text: String, location: AbsolutePoint) {
+    fun strokeText(text: String, location: Point) {
         renderContext.strokeText(text, location.x, location.y)
     }
 
-    fun line(point1: AbsolutePoint, point2: AbsolutePoint) {
+    fun line(point1: Point, point2: Point) {
         stroke {
             renderContext.moveTo(point1.x, point1.y)
             renderContext.lineTo(point2.x, point2.y)
@@ -65,11 +65,11 @@ class Renderer(private val renderContext: RenderContext, private val bounds: Abs
         renderContext.stroke()
     }
 
-    fun circle(center: AbsolutePoint, radius: Double) {
+    fun circle(center: Point, radius: Double) {
         renderContext.arc(center.x, center.y, radius, 0.0, 2 * PI)
     }
 
-    fun roundRect(rect: AbsoluteRectangle, radius: Double) {
+    fun roundRect(rect: Rectangle, radius: Double) {
         with(renderContext) {
             moveTo(rect.left + radius, rect.top)
             lineTo(rect.right - radius, rect.top)
