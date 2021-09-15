@@ -3,8 +3,7 @@ package timelinejs.rendering.compound.renderable
 import timelinejs.rendering.compound.style.EnclosedTextStyle
 import timelinejs.rendering.Renderer
 import timelinejs.datastructure.AbsolutePoint
-import timelinejs.datastructure.Point
-import timelinejs.datastructure.Rectangle
+import timelinejs.datastructure.AbsoluteRectangle
 import timelinejs.datastructure.Size
 import timelinejs.rendering.compound.RenderParent
 import timelinejs.rendering.simple.renderable.RoundRectangle
@@ -22,7 +21,7 @@ class EnclosedText(
 
     companion object {
         fun create(
-            location: Point,
+            location: AbsolutePoint,
             textStr: String,
             style: EnclosedTextStyle,
             renderer: Renderer
@@ -33,7 +32,7 @@ class EnclosedText(
             val text = Text(textLocation, textStr, style.textStyle, renderer)
 
             val size = text.size + Size(paddingOffset) * 2.0
-            val bounds = Rectangle(location, size)
+            val bounds = AbsoluteRectangle(location, size)
             val roundRect = RoundRectangle(bounds, style.roundRectStyle, renderer)
 
             return EnclosedText(roundRect, text)

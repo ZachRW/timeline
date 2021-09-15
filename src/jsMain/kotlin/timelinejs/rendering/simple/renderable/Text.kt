@@ -1,9 +1,6 @@
 package timelinejs.rendering.simple.renderable
 
 import timelinejs.rendering.Renderer
-import timelinejs.datastructure.AbsolutePoint
-import timelinejs.datastructure.Point
-import timelinejs.datastructure.Rectangle
 import timelinejs.datastructure.Size
 import timelinejs.rendering.Renderable
 import timelinejs.rendering.simple.style.TextStyle

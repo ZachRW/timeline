@@ -1,13 +1,12 @@
 package timelinejs.rendering
 
-import timelinejs.datastructure.Rectangle
-import timelinejs.datastructure.Point
+import timelinejs.datastructure.AbsoluteRectangle
 import timelinejs.datastructure.Size
 import timelinejs.rendering.compound.style.DrawMode
 import kotlin.math.PI
 import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 
-class Renderer(private val renderContext: RenderContext, private val bounds: Rectangle) {
+class Renderer(private val renderContext: RenderContext, private val bounds: AbsoluteRectangle) {
     init {
         if (!bounds.location.isEmpty()) {
             error("Render bounds must be at (0, 0)")
@@ -69,7 +68,7 @@ class Renderer(private val renderContext: RenderContext, private val bounds: Rec
         renderContext.arc(center.x, center.y, radius, 0.0, 2 * PI)
     }
 
-    fun roundRect(rect: Rectangle, radius: Double) {
+    fun roundRect(rect: AbsoluteRectangle, radius: Double) {
         with(renderContext) {
             moveTo(rect.left + radius, rect.top)
             lineTo(rect.right - radius, rect.top)

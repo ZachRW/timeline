@@ -35,6 +35,9 @@ open class View protected constructor(
 
     private fun calculateEndDate() = Date(startDateMs + pxToMs(width))
 
+    fun datePlusPx(date: Date, px: Double): Date =
+        date plusMs pxToMs(px)
+
     /**
      * Returns milliseconds relative to [startDate] at [px]
      * @param [px] horizontal pixel position from the left

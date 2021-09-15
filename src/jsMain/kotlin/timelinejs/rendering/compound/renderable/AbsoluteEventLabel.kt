@@ -7,12 +7,17 @@ import timelinejs.rendering.Renderable
 import timelinejs.rendering.compound.style.EventLabelStyle
 import timelinejs.rendering.simple.renderable.Line
 
-abstract class EventLabel(
+class AbsoluteEventLabel(
     private val textStr: String,
     private val stemBaseY: Double,
     private val style: EventLabelStyle,
-    private val renderer: Renderer
+    private val renderer: Renderer,
+    initLocation: AbsolutePoint = AbsolutePoint.EMPTY,
+    initStemX: Double = 0.0
 ) : Renderable {
+    private var location: AbsolutePoint = initLocation
+    private var stemX: Double = initStemX
+
     override fun render() {
         val enclosedText = createEnclosedText()
         val stem = createStem(enclosedText.bounds)

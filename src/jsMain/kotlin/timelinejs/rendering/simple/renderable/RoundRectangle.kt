@@ -1,13 +1,13 @@
 package timelinejs.rendering.simple.renderable
 
 import timelinejs.rendering.Renderer
-import timelinejs.datastructure.Rectangle
+import timelinejs.datastructure.AbsoluteRectangle
 import timelinejs.rendering.Renderable
 import timelinejs.rendering.compound.style.DrawMode
 import timelinejs.rendering.compound.style.RoundRectangleStyle
 
 class RoundRectangle(
-    val bounds: Rectangle,
+    val bounds: AbsoluteRectangle,
     private val style: RoundRectangleStyle,
     private val renderer: Renderer
 ) : Renderable {

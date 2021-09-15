@@ -1,9 +1,9 @@
 package timelinejs.datastructure
 
 data class AbsolutePoint(
-    override val x: Double,
-    override val y: Double
-) : Point {
+    val x: Double,
+    val y: Double
+) {
     constructor(size: Size) : this(size.width, size.height)
 
     constructor(x: Number, y: Number) : this(x.toDouble(), y.toDouble())
@@ -12,7 +12,7 @@ data class AbsolutePoint(
         val EMPTY = AbsolutePoint(0.0, 0.0)
     }
 
-    override operator fun plus(other: AbsolutePoint) =
+    operator fun plus(other: AbsolutePoint) =
         AbsolutePoint(x + other.x, y + other.y)
 
     operator fun minus(other: AbsolutePoint) =
@@ -21,6 +21,6 @@ data class AbsolutePoint(
     operator fun unaryMinus() =
         AbsolutePoint(-x, -y)
 
-    fun translate(x: Double, y: Double) =
-        AbsolutePoint(this.x + x, this.y + y)
+    fun translate(dx: Double, dy: Double) =
+        AbsolutePoint(this.x + dx, this.y + dy)
 }

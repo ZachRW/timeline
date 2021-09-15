@@ -2,8 +2,6 @@ package timelinejs.rendering.simple.renderable
 
 import timelinejs.rendering.simple.style.LineStyle
 import timelinejs.rendering.Renderer
-import timelinejs.datastructure.AbsolutePoint
-import timelinejs.datastructure.Point
 import timelinejs.rendering.Renderable
 
 class Line(

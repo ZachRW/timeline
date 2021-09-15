@@ -1,10 +1,12 @@
 package timelinejs.rendering.compound.renderable
 
 import timelinejs.*
+import timelinejs.datastructure.RelativePoint
 import timelinejs.rendering.Renderable
 import timelinejs.rendering.Renderer
 import timelinejs.rendering.compound.RenderParent
 import timelinejs.rendering.compound.style.EventLabelStyle
+import kotlin.js.Date
 
 class DataRenderer(
     data: JsTimelineData,
@@ -35,11 +37,12 @@ class DataRenderer(
 
         init {
             val eventLabels = jsSeries.events.map { jsEvent ->
-                EventLabel(
+                AbsoluteEventLabel(
                     textStr = jsEvent.name,
                     stemBaseY = dateAxisY,
                     style = eventLabelStyle,
-                    renderer
+                    renderer,
+                    initLocation = RelativePoint(Date(), 0.0, view)
                 )
             }
 
