@@ -1,26 +1,26 @@
 package timelinejs.datastructure
 
-data class AbsoluteRectangle(
+data class StaticRectangle(
     val x: Double,
     val y: Double,
     val width: Double,
     val height: Double
-) {
+) : Rectangle {
     constructor(x: Number, y: Number, width: Number, height: Number)
             : this(x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble())
 
-    constructor(location: AbsolutePoint, size: Size)
+    constructor(location: StaticPoint, size: Size)
             : this(location.x, location.y, size.width, size.height)
 
     companion object {
-        val EMPTY = AbsoluteRectangle(0.0, 0.0, 0.0, 0.0)
+        val EMPTY = StaticRectangle(0.0, 0.0, 0.0, 0.0)
 
-        fun fromEdges(left: Number, top: Number, right: Number, bottom: Number): AbsoluteRectangle {
+        fun fromEdges(left: Number, top: Number, right: Number, bottom: Number): StaticRectangle {
             val leftDouble = left.toDouble()
             val topDouble = top.toDouble()
             val rightDouble = right.toDouble()
             val bottomDouble = bottom.toDouble()
-            return AbsoluteRectangle(
+            return StaticRectangle(
                 x = leftDouble,
                 y = topDouble,
                 width = rightDouble - leftDouble,
@@ -29,8 +29,10 @@ data class AbsoluteRectangle(
         }
     }
 
-    val location: AbsolutePoint get() = AbsolutePoint(x, y)
-    val size: Size get() = Size(width, height)
+    val location: StaticPoint
+        get() = StaticPoint(x, y)
+    val size: Size
+        get() = Size(width, height)
 
     val left get() = x
     val top get() = y
@@ -40,19 +42,19 @@ data class AbsoluteRectangle(
     val centerX get() = x + width / 2
     val centerY get() = y + height / 2
 
-    val topLeft get() = AbsolutePoint(left, top)
-    val topRight get() = AbsolutePoint(right, top)
-    val bottomLeft get() = AbsolutePoint(left, bottom)
-    val bottomRight get() = AbsolutePoint(right, bottom)
+    val topLeft get() = StaticPoint(left, top)
+    val topRight get() = StaticPoint(right, top)
+    val bottomLeft get() = StaticPoint(left, bottom)
+    val bottomRight get() = StaticPoint(right, bottom)
 
-    val leftCenter get() = AbsolutePoint(left, centerY)
-    val topCenter get() = AbsolutePoint(centerX, top)
-    val rightCenter get() = AbsolutePoint(right, centerY)
-    val bottomCenter get() = AbsolutePoint(centerX, bottom)
-    val center get() = AbsolutePoint(centerX, centerY)
+    val leftCenter get() = StaticPoint(left, centerY)
+    val topCenter get() = StaticPoint(centerX, top)
+    val rightCenter get() = StaticPoint(right, centerY)
+    val bottomCenter get() = StaticPoint(centerX, bottom)
+    val center get() = StaticPoint(centerX, centerY)
 
-    fun copy(location: AbsolutePoint = this.location, size: Size = this.size) =
-        AbsoluteRectangle(location, size)
+    fun copy(location: StaticPoint = this.location, size: Size = this.size) =
+        StaticRectangle(location, size)
 
     fun translate(dx: Double, dy: Double) =
         copy(
@@ -60,10 +62,10 @@ data class AbsoluteRectangle(
             y = y + dy
         )
 
-    fun translate(absolutePoint: AbsolutePoint) =
-        copy(location = location + absolutePoint)
+    fun translate(staticPoint: StaticPoint) =
+        copy(location = location + staticPoint)
 
-    fun pointToPoint(start: AbsolutePoint, end: AbsolutePoint) =
+    fun pointToPoint(start: StaticPoint, end: StaticPoint) =
         copy(location = end - start)
 
     fun grow(deltaWidth: Double, deltaHeight: Double) =
@@ -93,4 +95,6 @@ data class AbsoluteRectangle(
         centeredGrow(deltaSize.width, deltaSize.height)
 
     fun isEmpty() = size.isEmpty()
+
+    override fun toStaticRectangle() = this
 }

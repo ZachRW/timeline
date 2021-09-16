@@ -1,7 +1,7 @@
 package timelinejs.datastructure
 
 data class Size(val width: Double, val height: Double) {
-    constructor(absolutePoint: AbsolutePoint) : this(absolutePoint.x, absolutePoint.y)
+    constructor(staticPoint: StaticPoint) : this(staticPoint.x, staticPoint.y)
 
     constructor(width: Number, height: Number) : this(width.toDouble(), height.toDouble())
 

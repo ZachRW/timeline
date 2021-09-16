@@ -3,24 +3,24 @@ package timelinejs.datastructure
 import timelinejs.View
 import kotlin.js.Date
 
-data class RelativeRectangle(
+data class DynamicRectangle(
     val xDate: Date,
     val y: Double,
     val width: Double,
     val height: Double,
     val view: View
-) {
+) : Rectangle {
     constructor(xDate: Date, y: Number, width: Number, height: Number, view: View)
             : this(xDate, y.toDouble(), width.toDouble(), height.toDouble(), view)
 
-    constructor(location: RelativePoint, size: Size, view: View)
+    constructor(location: DynamicPoint, size: Size, view: View)
             : this(location.xDate, location.y, size.width, size.height, view)
 
     companion object {
-        fun fromEdges(left: Date, top: Number, right: Date, bottom: Number, view: View): RelativeRectangle {
+        fun fromEdges(left: Date, top: Number, right: Date, bottom: Number, view: View): DynamicRectangle {
             val topDouble = top.toDouble()
             val bottomDouble = bottom.toDouble()
-            return RelativeRectangle(
+            return DynamicRectangle(
                 xDate = left,
                 y = topDouble,
                 width = view.dateToPx(right) - view.dateToPx(left),
@@ -30,8 +30,10 @@ data class RelativeRectangle(
         }
     }
 
-    val location: RelativePoint get() = RelativePoint(xDate, y, view)
-    val size: Size get() = Size(width, height)
+    val location: DynamicPoint
+        get() = DynamicPoint(xDate, y, view)
+    val size: Size
+        get() = Size(width, height)
 
     val left: Date get() = xDate
     val top: Double get() = y
@@ -41,19 +43,22 @@ data class RelativeRectangle(
     val centerX: Date get() = view.datePlusPx(xDate, width / 2)
     val centerY: Double get() = y + height / 2
 
-    val topLeft get() = RelativePoint(left, top, view)
-    val topRight get() = RelativePoint(right, top, view)
-    val bottomLeft get() = RelativePoint(left, bottom, view)
-    val bottomRight get() = RelativePoint(right, bottom, view)
+    val topLeft get() = DynamicPoint(left, top, view)
+    val topRight get() = DynamicPoint(right, top, view)
+    val bottomLeft get() = DynamicPoint(left, bottom, view)
+    val bottomRight get() = DynamicPoint(right, bottom, view)
 
-    val leftCenter get() = RelativePoint(left, centerY, view)
-    val topCenter get() = RelativePoint(centerX, top, view)
-    val rightCenter get() = RelativePoint(right, centerY, view)
-    val bottomCenter get() = RelativePoint(centerX, bottom, view)
-    val center get() = RelativePoint(centerX, centerY, view)
+    val leftCenter get() = DynamicPoint(left, centerY, view)
+    val topCenter get() = DynamicPoint(centerX, top, view)
+    val rightCenter get() = DynamicPoint(right, centerY, view)
+    val bottomCenter get() = DynamicPoint(centerX, bottom, view)
+    val center get() = DynamicPoint(centerX, centerY, view)
 
-    fun copy(location: RelativePoint = this.location, size: Size = this.size) =
-        RelativeRectangle(location, size, view)
+    override fun toStaticRectangle() =
+        StaticRectangle(location.toStaticPoint(), size)
+
+    fun copy(location: DynamicPoint = this.location, size: Size = this.size) =
+        DynamicRectangle(location, size, view)
 
     fun translate(dx: Double, dy: Double) =
         copy(
@@ -61,10 +66,10 @@ data class RelativeRectangle(
             y = y + dy
         )
 
-    fun translate(absolutePoint: AbsolutePoint) =
-        copy(location = location + absolutePoint)
+    fun translate(staticPoint: StaticPoint) =
+        copy(location = location + staticPoint)
 
-    fun pointToPoint(start: AbsolutePoint, end: RelativePoint) =
+    fun pointToPoint(start: StaticPoint, end: DynamicPoint) =
         copy(location = end - start)
 
     fun grow(deltaWidth: Double, deltaHeight: Double) =

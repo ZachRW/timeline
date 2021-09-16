@@ -1,12 +1,11 @@
 package timelinejs.rendering
 
-import timelinejs.datastructure.AbsoluteRectangle
-import timelinejs.datastructure.Size
+import timelinejs.datastructure.*
 import timelinejs.rendering.compound.style.DrawMode
 import kotlin.math.PI
 import org.w3c.dom.CanvasRenderingContext2D as RenderContext
 
-class Renderer(private val renderContext: RenderContext, private val bounds: AbsoluteRectangle) {
+class Renderer(private val renderContext: RenderContext, private val bounds: StaticRectangle) {
     init {
         if (!bounds.location.isEmpty()) {
             error("Render bounds must be at (0, 0)")
@@ -27,17 +26,21 @@ class Renderer(private val renderContext: RenderContext, private val bounds: Abs
         set(value) = renderContext.setLineDash(value)
 
     fun fillText(text: String, location: Point) {
-        renderContext.fillText(text, location.x, location.y)
+        val staticLocation = location.toStaticPoint()
+        renderContext.fillText(text, staticLocation.x, staticLocation.y)
     }
 
     fun strokeText(text: String, location: Point) {
-        renderContext.strokeText(text, location.x, location.y)
+        val staticLocation = location.toStaticPoint()
+        renderContext.strokeText(text, staticLocation.x, staticLocation.y)
     }
 
     fun line(point1: Point, point2: Point) {
+        val staticPoint1 = point1.toStaticPoint()
+        val staticPoint2 = point2.toStaticPoint()
         stroke {
-            renderContext.moveTo(point1.x, point1.y)
-            renderContext.lineTo(point2.x, point2.y)
+            renderContext.moveTo(staticPoint1.x, staticPoint1.y)
+            renderContext.lineTo(staticPoint2.x, staticPoint2.y)
         }
     }
 
@@ -65,20 +68,22 @@ class Renderer(private val renderContext: RenderContext, private val bounds: Abs
     }
 
     fun circle(center: Point, radius: Double) {
-        renderContext.arc(center.x, center.y, radius, 0.0, 2 * PI)
+        val staticCenter = center.toStaticPoint()
+        renderContext.arc(staticCenter.x, staticCenter.y, radius, 0.0, 2 * PI)
     }
 
-    fun roundRect(rect: AbsoluteRectangle, radius: Double) {
+    fun roundRect(rect: Rectangle, radius: Double) {
+        val staticRect = rect.toStaticRectangle()
         with(renderContext) {
-            moveTo(rect.left + radius, rect.top)
-            lineTo(rect.right - radius, rect.top)
-            quadraticCurveTo(rect.right, rect.top, rect.right, rect.top + radius)
-            lineTo(rect.right, rect.bottom - radius)
-            quadraticCurveTo(rect.right, rect.bottom, rect.right - radius, rect.bottom)
-            lineTo(rect.left + radius, rect.bottom)
-            quadraticCurveTo(rect.left, rect.bottom, rect.left, rect.bottom - radius)
-            lineTo(rect.left, rect.top + radius)
-            quadraticCurveTo(rect.left, rect.top, rect.left + radius, rect.top)
+            moveTo(staticRect.left + radius, staticRect.top)
+            lineTo(staticRect.right - radius, staticRect.top)
+            quadraticCurveTo(staticRect.right, staticRect.top, staticRect.right, staticRect.top + radius)
+            lineTo(staticRect.right, staticRect.bottom - radius)
+            quadraticCurveTo(staticRect.right, staticRect.bottom, staticRect.right - radius, staticRect.bottom)
+            lineTo(staticRect.left + radius, staticRect.bottom)
+            quadraticCurveTo(staticRect.left, staticRect.bottom, staticRect.left, staticRect.bottom - radius)
+            lineTo(staticRect.left, staticRect.top + radius)
+            quadraticCurveTo(staticRect.left, staticRect.top, staticRect.left + radius, staticRect.top)
         }
     }
 

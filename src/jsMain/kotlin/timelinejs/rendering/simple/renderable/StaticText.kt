@@ -2,16 +2,17 @@ package timelinejs.rendering.simple.renderable
 
 import timelinejs.rendering.Renderer
 import timelinejs.datastructure.Size
-import timelinejs.rendering.Renderable
+import timelinejs.datastructure.StaticPoint
+import timelinejs.rendering.StaticRenderable
 import timelinejs.rendering.simple.style.TextStyle
 import timelinejs.rendering.compound.style.DrawMode
 
-class Text(
-    private val location: Point,
+class StaticText(
+    private val location: StaticPoint,
     private val text: String,
     private val style: TextStyle,
     private val renderer: Renderer
-) : Renderable {
+) : StaticRenderable {
     val size: Size
 
     init {

@@ -1,8 +1,10 @@
 package timelinejs.rendering.compound
 
+import timelinejs.View
+import timelinejs.rendering.DynamicRenderable
 import timelinejs.rendering.Renderable
 
-open class RenderParent : Renderable {
+open class DynamicRenderParent(view: View) : DynamicRenderable(view) {
     protected var children = mutableListOf<Renderable>()
 
     override fun render() {

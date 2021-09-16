@@ -1,16 +1,20 @@
 package timelinejs.rendering.simple.renderable
 
+import timelinejs.View
+import timelinejs.datastructure.DynamicRectangle
 import timelinejs.rendering.Renderer
-import timelinejs.datastructure.AbsoluteRectangle
+import timelinejs.datastructure.StaticRectangle
+import timelinejs.rendering.DynamicRenderable
 import timelinejs.rendering.Renderable
 import timelinejs.rendering.compound.style.DrawMode
 import timelinejs.rendering.compound.style.RoundRectangleStyle
 
 class RoundRectangle(
-    val bounds: AbsoluteRectangle,
+    val bounds: DynamicRectangle,
     private val style: RoundRectangleStyle,
-    private val renderer: Renderer
-) : Renderable {
+    private val renderer: Renderer,
+    view: View
+) : DynamicRenderable(view) {
     override fun render() {
         applyStyle()
         fillOrStroke()
@@ -30,7 +34,7 @@ class RoundRectangle(
 
     private fun fillOrStroke() {
         renderer.useDrawFun(style.drawMode) {
-            roundRect(bounds, style.radius)
+            roundRect(bounds.toStaticRectangle(), style.radius)
         }
     }
 }

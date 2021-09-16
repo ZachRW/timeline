@@ -6,9 +6,9 @@ import timelinejs.fromYear
 import timelinejs.rangeTo
 import timelinejs.rendering.compound.style.DateAxisStyle
 import timelinejs.rendering.Renderer
-import timelinejs.datastructure.AbsolutePoint
-import timelinejs.rendering.compound.RenderParent
-import timelinejs.rendering.simple.renderable.Line
+import timelinejs.datastructure.StaticPoint
+import timelinejs.rendering.compound.StaticRenderParent
+import timelinejs.rendering.simple.renderable.DynamicLine
 import kotlin.js.Date
 
 class DateAxis(
@@ -16,10 +16,10 @@ class DateAxis(
     private val style: DateAxisStyle,
     private val view: View,
     private val renderer: Renderer
-) : RenderParent() {
-    private val axisLine = Line(
-        AbsolutePoint(0.0, y),
-        AbsolutePoint(view.width, y),
+) : StaticRenderParent() {
+    private val axisLine = DynamicLine(
+        StaticPoint(0.0, y),
+        StaticPoint(view.width, y),
         style.axisLineStyle,
         renderer
     )
@@ -42,7 +42,7 @@ class DateAxis(
 
     private fun addDateMarkerToChildren(date: Date) {
         children += DateMarker(
-            AbsolutePoint(view.dateToPx(date), y),
+            StaticPoint(view.dateToPx(date), y),
             date.getFullYear().toString(),
             style.markerStyle,
             renderer

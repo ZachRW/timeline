@@ -1,10 +1,10 @@
 package timelinejs.rendering.compound.renderable
 
 import timelinejs.*
-import timelinejs.datastructure.RelativePoint
+import timelinejs.datastructure.DynamicPoint
 import timelinejs.rendering.Renderable
 import timelinejs.rendering.Renderer
-import timelinejs.rendering.compound.RenderParent
+import timelinejs.rendering.compound.StaticRenderParent
 import timelinejs.rendering.compound.style.EventLabelStyle
 import kotlin.js.Date
 
@@ -32,17 +32,17 @@ class DataRenderer(
         }
     }
 
-    private inner class SeriesView(jsSeries: JsSeries, eventLabelStyle: EventLabelStyle) : RenderParent() {
+    private inner class SeriesView(jsSeries: JsSeries, eventLabelStyle: EventLabelStyle) : StaticRenderParent() {
         var visible = true
 
         init {
             val eventLabels = jsSeries.events.map { jsEvent ->
-                AbsoluteEventLabel(
+                EventLabel(
                     textStr = jsEvent.name,
                     stemBaseY = dateAxisY,
                     style = eventLabelStyle,
                     renderer,
-                    initLocation = RelativePoint(Date(), 0.0, view)
+                    initLocation = DynamicPoint(Date(), 0.0, view)
                 )
             }
 
