@@ -16,6 +16,7 @@ class DataRenderer(
 ) : Renderable {
     private val seriesViews: List<SeriesView> = data.toSeriesViews()
 
+
     override fun render() {
         for (seriesView in seriesViews) {
             if (seriesView.visible) {
@@ -39,10 +40,12 @@ class DataRenderer(
             val eventLabels = jsSeries.events.map { jsEvent ->
                 EventLabel(
                     textStr = jsEvent.name,
+                    date = jsEvent.date,
                     stemBaseY = dateAxisY,
                     style = eventLabelStyle,
-                    renderer,
-                    initLocation = DynamicPoint(Date(), 0.0, view)
+                    renderer = renderer,
+                    initLocation = DynamicPoint(jsEvent.date, 100.0, view),
+                    view = view
                 )
             }
 

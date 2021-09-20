@@ -8,7 +8,7 @@ import timelinejs.rendering.compound.style.DateAxisStyle
 import timelinejs.rendering.Renderer
 import timelinejs.datastructure.StaticPoint
 import timelinejs.rendering.compound.StaticRenderParent
-import timelinejs.rendering.simple.renderable.DynamicLine
+import timelinejs.rendering.simple.renderable.StaticLine
 import kotlin.js.Date
 
 class DateAxis(
@@ -17,7 +17,7 @@ class DateAxis(
     private val view: View,
     private val renderer: Renderer
 ) : StaticRenderParent() {
-    private val axisLine = DynamicLine(
+    private val axisLine = StaticLine(
         StaticPoint(0.0, y),
         StaticPoint(view.width, y),
         style.axisLineStyle,

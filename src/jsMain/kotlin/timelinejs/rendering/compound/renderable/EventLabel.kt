@@ -2,6 +2,7 @@ package timelinejs.rendering.compound.renderable
 
 import timelinejs.View
 import timelinejs.datastructure.DynamicPoint
+import timelinejs.datastructure.DynamicRectangle
 import timelinejs.rendering.Renderer
 import timelinejs.datastructure.StaticPoint
 import timelinejs.datastructure.StaticRectangle
@@ -35,10 +36,11 @@ class EventLabel(
             location,
             textStr,
             style.enclosedTextStyle,
-            renderer
+            renderer,
+            view
         )
 
-    private fun createStem(enclosedTextBounds: StaticRectangle): DynamicLine {
+    private fun createStem(enclosedTextBounds: DynamicRectangle): DynamicLine {
         val stemAttachY = if (stemBaseY < enclosedTextBounds.y) {
             enclosedTextBounds.bottom
         } else {

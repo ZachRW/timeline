@@ -22,7 +22,7 @@ class TimelineHandler(timelineData: TimelineData) : InputListener {
         timeline = Timeline(
             ctx,
             timelineData,
-            bounds = StaticRectangle.createAbsolute(0, 0, canvas.width, canvas.height)
+            bounds = StaticRectangle(0, 0, canvas.width, canvas.height)
         )
 
         InputHandler(this, canvas, document)
