@@ -9,7 +9,7 @@ import timelinejs.rendering.simple.style.TextStyle
 import timelinejs.rendering.compound.style.DrawMode
 
 class DynamicText(
-    private val location: DynamicPoint,
+    var location: DynamicPoint,
     private val text: String,
     private val style: TextStyle,
     private val renderer: Renderer,

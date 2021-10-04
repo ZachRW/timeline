@@ -2,49 +2,45 @@ package timelinejs.rendering.compound.renderable
 
 import timelinejs.View
 import timelinejs.datastructure.DynamicPoint
-import timelinejs.datastructure.DynamicRectangle
-import timelinejs.rendering.Renderer
-import timelinejs.datastructure.StaticPoint
-import timelinejs.datastructure.StaticRectangle
 import timelinejs.rendering.DynamicRenderable
-import timelinejs.rendering.Renderable
+import timelinejs.rendering.Renderer
 import timelinejs.rendering.compound.style.EventLabelStyle
 import timelinejs.rendering.simple.renderable.DynamicLine
 import kotlin.js.Date
 
 class EventLabel(
     private val textStr: String,
-    private val date: Date,
+    val date: Date,
     private val stemBaseY: Double,
     private val style: EventLabelStyle,
     private val renderer: Renderer,
-    initLocation: DynamicPoint,
     view: View
 ) : DynamicRenderable(view) {
-    private var location: DynamicPoint = initLocation
+    private val enclosedText: EnclosedText = createEnclosedText()
+    private var stem: DynamicLine = createStem()
+
+    val bounds by enclosedText::bounds
+    var location by enclosedText::location
 
     override fun render() {
-        val enclosedText = createEnclosedText()
-        val stem = createStem(enclosedText.bounds)
-
         stem.render()
         enclosedText.render()
     }
 
     private fun createEnclosedText() =
         EnclosedText(
-            location,
+            DynamicPoint(date, 0.0, view),
             textStr,
             style.enclosedTextStyle,
             renderer,
             view
         )
 
-    private fun createStem(enclosedTextBounds: DynamicRectangle): DynamicLine {
-        val stemAttachY = if (stemBaseY < enclosedTextBounds.y) {
-            enclosedTextBounds.bottom
+    private fun createStem(): DynamicLine {
+        val stemAttachY = if (stemBaseY > enclosedText.bounds.y) {
+            enclosedText.bounds.bottom
         } else {
-            enclosedTextBounds.top
+            enclosedText.bounds.top
         }
 
         return DynamicLine(

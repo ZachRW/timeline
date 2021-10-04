@@ -1,5 +1,7 @@
 package timelinejs.datastructure
 
+import timelinejs.View
+
 data class StaticPoint(
     val x: Double,
     val y: Double
@@ -27,4 +29,11 @@ data class StaticPoint(
     fun isEmpty() = x == 0.0 && y == 0.0
 
     override fun toStaticPoint() = this
+
+    fun toDynamicPoint(view: View) =
+        DynamicPoint(
+            xDate = view.pxToDate(x),
+            y,
+            view
+        )
 }

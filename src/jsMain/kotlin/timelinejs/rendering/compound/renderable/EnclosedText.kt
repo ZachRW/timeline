@@ -18,7 +18,6 @@ class EnclosedText(
 ) : DynamicRenderParent(view) {
     private val roundRect: RoundRectangle
     private val text: DynamicText
-    val bounds get() = roundRect.bounds
 
     init {
         val paddingOffset = StaticPoint(style.textPadding, style.textPadding)
@@ -32,4 +31,12 @@ class EnclosedText(
 
         children = mutableListOf(roundRect, text)
     }
+
+    val bounds by roundRect::bounds
+    var location
+        get() = roundRect.location
+        set(value) {
+            roundRect.location = value
+            text.location = value
+        }
 }
