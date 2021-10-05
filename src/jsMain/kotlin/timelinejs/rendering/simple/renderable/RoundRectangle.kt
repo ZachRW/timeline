@@ -10,19 +10,11 @@ import timelinejs.rendering.compound.style.DrawMode
 import timelinejs.rendering.compound.style.RoundRectangleStyle
 
 class RoundRectangle(
-    bounds: DynamicRectangle,
+    val bounds: DynamicRectangle,
     private val style: RoundRectangleStyle,
     private val renderer: Renderer,
     view: View
 ) : DynamicRenderable(view) {
-    var bounds: DynamicRectangle = bounds
-        private set
-    var location
-        get() = bounds.location
-        set(value) {
-            bounds = bounds.copy(location = value)
-        }
-
     override fun render() {
         applyStyle()
         fillOrStroke()

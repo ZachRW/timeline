@@ -33,10 +33,4 @@ class EnclosedText(
     }
 
     val bounds by roundRect::bounds
-    var location
-        get() = roundRect.location
-        set(value) {
-            roundRect.location = value
-            text.location = value
-        }
 }

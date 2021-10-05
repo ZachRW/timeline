@@ -8,6 +8,9 @@ fun CommonDate.toJsDate() = Date(year, month - 1, day)
 operator fun Date.rangeTo(other: Date): DateRange =
     DateRange(this, other)
 
+operator fun Date.compareTo(other: Date): Int =
+    getTime().compareTo(other.getTime())
+
 infix fun Date.plusMs(ms: Double): Date =
     Date(getTime() + ms)
 

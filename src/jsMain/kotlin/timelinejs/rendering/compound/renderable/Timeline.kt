@@ -38,6 +38,7 @@ class Timeline(
 
     fun zoom(zoomPx: Double, multiplier: Double) {
         view.zoom(zoomPx, multiplier)
+        dataRenderer.update()
         render()
     }
 

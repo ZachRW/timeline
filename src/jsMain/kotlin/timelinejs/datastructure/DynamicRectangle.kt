@@ -1,6 +1,7 @@
 package timelinejs.datastructure
 
 import timelinejs.View
+import timelinejs.compareTo
 import kotlin.js.Date
 
 data class DynamicRectangle(
@@ -100,4 +101,10 @@ data class DynamicRectangle(
         centeredGrow(deltaSize.width, deltaSize.height)
 
     fun isEmpty() = size.isEmpty()
+
+    fun intersects(other: DynamicRectangle): Boolean =
+        left <= other.right &&
+                other.left <= right &&
+                top <= other.bottom &&
+                other.top <= bottom
 }

@@ -16,20 +16,26 @@ class EventLabel(
     private val renderer: Renderer,
     view: View
 ) : DynamicRenderable(view) {
-    private val enclosedText: EnclosedText = createEnclosedText()
+    private var enclosedText: EnclosedText =
+        createEnclosedText(DynamicPoint(date, 0.0, view))
     private var stem: DynamicLine = createStem()
 
     val bounds by enclosedText::bounds
-    var location by enclosedText::location
+    var location: DynamicPoint
+        get() = bounds.location
+        set(value) {
+            enclosedText = createEnclosedText(value)
+            stem = createStem()
+        }
 
     override fun render() {
         stem.render()
         enclosedText.render()
     }
 
-    private fun createEnclosedText() =
+    private fun createEnclosedText(location: DynamicPoint) =
         EnclosedText(
-            DynamicPoint(date, 0.0, view),
+            location,
             textStr,
             style.enclosedTextStyle,
             renderer,
