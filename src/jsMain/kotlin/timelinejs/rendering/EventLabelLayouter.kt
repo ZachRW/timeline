@@ -13,6 +13,7 @@ class EventLabelLayouter(
     private val view: View
 ) {
     private val eventLabels = eventLabels.sortedBy { it.location.xDate.getTime() }
+    private val intersectionGraph
 
     fun layout() {
         moveToDefaultPositions()
