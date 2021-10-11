@@ -9,7 +9,7 @@ class Aligner(list1: List<Double>, list2: List<Double>) {
 
     fun getOffset(): Double {
         val averageDistancePoints = differences.map { difference ->
-            StaticPoint(difference, averageDistance(difference))
+            StaticPoint(difference, getDistances(difference).average())
         }
         val averageDistanceFunction =
             LinearPieceWiseFunction(averageDistancePoints)
@@ -19,20 +19,20 @@ class Aligner(list1: List<Double>, list2: List<Double>) {
         }
 
         val bestOffset = candidateOffsets.minByOrNull { candidate ->
-            TODO()
+            getDistances(candidate).meanDeviation()
         }
 
         return bestOffset ?: error("candidateOffsets is empty")
     }
 
-    fun averageDistance(offset: Double): Double {
-        val distances = differences.map { abs(it - offset) }
-        return distances.average()
+    private fun getDistances(offset: Double): List<Double> {
+        return differences.map { abs(it - offset) }
     }
+}
 
-    fun distanceStandardDeviation(offset: Double): Double {
-        TODO()
-    }
+private fun List<Double>.meanDeviation(): Double {
+    val mean = average()
+    return map { abs(it - mean) }.average()
 }
 
 private class LinearPieceWiseFunction(
@@ -63,6 +63,10 @@ private class LinearPieceWiseFunction(
 
             error("No x-intercept found")
         }
+
+    fun getIntersectionWithVFunctionX(vFunctionXIntercept: Double) {
+        TODO("Replace xIntercept and minusVFunction with this function")
+    }
 
     fun minusVFunction(xIntercept: Double): LinearPieceWiseFunction {
         val newPoints = points.map { point ->

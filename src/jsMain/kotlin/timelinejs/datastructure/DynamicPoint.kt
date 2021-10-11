@@ -3,7 +3,7 @@ package timelinejs.datastructure
 import timelinejs.View
 import kotlin.js.Date
 
-class DynamicPoint(
+data class DynamicPoint(
     val xDate: Date,
     val y: Double,
     val view: View
