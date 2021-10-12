@@ -5,6 +5,8 @@ import kotlin.math.abs
 import kotlin.math.sign
 
 class Aligner(list1: List<Double>, list2: List<Double>) {
+    constructor(list1: DoubleArray, list2: DoubleArray) : this(list1.toList(), list2.toList())
+
     private val differences = list1.zip(list2).map { (a, b) -> b - a }
 
     fun getOffset(): Double {
@@ -36,10 +38,33 @@ private fun List<Double>.meanDeviation(): Double {
 }
 
 private class LinearPieceWiseFunction(
-    private val points: List<StaticPoint>,
+    points: List<StaticPoint>,
     private val leftSlope: Double = -1.0,
     private val rightSlope: Double = 1.0
 ) {
+    private val points: List<StaticPoint>
+
+    init {
+        if (points.isEmpty()) {
+            error("points is empty")
+        }
+
+        val mutablePoints = points.toMutableList()
+        mutablePoints.sortBy { it.x }
+
+        val iterator = mutablePoints.listIterator()
+        var prevPoint = iterator.next()
+        while (iterator.hasNext()) {
+            val point = iterator.next()
+            if (point.x == prevPoint.x) {
+                iterator.remove()
+            }
+            prevPoint = point
+        }
+
+        this.points = mutablePoints
+    }
+
     val xIntercept: Double
         get() {
             if (leftSlope == 0.0 && points[0].y == 0.0) {
