@@ -46,7 +46,8 @@ class EventLabelLayouter(
             prevHalfWidth = halfWidth
         }
 
-        val offset = Aligner(labelCenterPxs, datePxs).getOffset()
+//        val offset = Aligner(labelCenterPxs, datePxs).getOffset()
+        val offset = 0.0
 
         var eventLabelPx = offset - eventLabels[0].bounds.width / 2
         for (eventLabel in eventLabels) {
