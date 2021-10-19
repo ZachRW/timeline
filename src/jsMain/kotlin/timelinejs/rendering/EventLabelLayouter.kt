@@ -18,21 +18,23 @@ class EventLabelLayouter(
     fun layout() {
         moveToDefaultPositions()
 
-        val intersecting = getIntersecting()
-        align(intersecting)
+        align(eventLabels)
     }
 
     private fun moveToDefaultPositions() {
+        var top = true
+
         for (eventLabel in eventLabels) {
             val xDate = view.datePlusPx(eventLabel.date, -eventLabel.bounds.width / 2)
-            val y = dateAxisY - DEFAULT_PX_FROM_AXIS - eventLabel.bounds.height
+            val y = if (top) {
+                dateAxisY - DEFAULT_PX_FROM_AXIS - eventLabel.bounds.height
+            } else {
+                dateAxisY + DEFAULT_PX_FROM_AXIS
+            }
 
             eventLabel.location = DynamicPoint(xDate, y, view)
+            top = !top
         }
-    }
-
-    private fun flipEventLabels(intersecting: List<EventLabel>) {
-        TODO()
     }
 
     private fun align(eventLabels: List<EventLabel>) {
@@ -46,8 +48,7 @@ class EventLabelLayouter(
             prevHalfWidth = halfWidth
         }
 
-//        val offset = Aligner(labelCenterPxs, datePxs).getOffset()
-        val offset = 0.0
+        val offset = Aligner(labelCenterPxs, datePxs).getOffset()
 
         var eventLabelPx = offset - eventLabels[0].bounds.width / 2
         for (eventLabel in eventLabels) {
@@ -58,17 +59,19 @@ class EventLabelLayouter(
     }
 
     private fun getIntersecting(): List<EventLabel> {
-        val intersecting = mutableListOf<EventLabel>()
+        TODO("fix returning duplicates")
 
-        for (eventLabel1 in eventLabels) {
-            for (eventLabel2 in eventLabels - intersecting) {
-                if (eventLabel1.bounds.intersects(eventLabel2.bounds)) {
-                    intersecting += eventLabel1
-                    intersecting += eventLabel2
-                }
-            }
-        }
-        return intersecting
+//        val intersecting = mutableListOf<EventLabel>()
+//
+//        for (eventLabel1 in eventLabels) {
+//            for (eventLabel2 in eventLabels - intersecting) {
+//                if (eventLabel1.bounds.intersects(eventLabel2.bounds)) {
+//                    intersecting += eventLabel1
+//                    intersecting += eventLabel2
+//                }
+//            }
+//        }
+//        return intersecting
     }
 
     private fun EventLabel.isMoveValid(newLocation: DynamicPoint): Boolean {

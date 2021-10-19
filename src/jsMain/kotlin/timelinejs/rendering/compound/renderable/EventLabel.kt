@@ -20,7 +20,7 @@ class EventLabel(
         createEnclosedText(DynamicPoint(date, 0.0, view))
     private var stem: DynamicLine = createStem()
 
-    val bounds by enclosedText::bounds
+    val bounds get() = enclosedText.bounds
     var location: DynamicPoint
         get() = bounds.location
         set(value) {
