@@ -4,8 +4,7 @@ import timelinejs.View
 import timelinejs.datastructure.DynamicPoint
 import timelinejs.rendering.compound.renderable.EventLabel
 
-private const val DEFAULT_PX_FROM_AXIS = 100.0
-private const val MIN_PX_FROM_AXIS = 10.0
+private const val MIN_DISTANCE_FROM_AXIS = 100.0
 private const val EVENT_LABEL_PADDING = 5.0
 
 class EventLabelLayouter(
@@ -14,27 +13,42 @@ class EventLabelLayouter(
     private val view: View
 ) {
     private val eventLabels = eventLabels.sortedBy { it.location.xDate.getTime() }
+    private val eventLabelsByRow = mutableMapOf<Int, MutableList<EventLabel>>()
 
     fun layout() {
         moveToDefaultPositions()
 
-        align(eventLabels)
+        eventLabelsByRow.values.forEach(::align)
     }
 
     private fun moveToDefaultPositions() {
         var top = true
 
         for (eventLabel in eventLabels) {
-            val xDate = view.datePlusPx(eventLabel.date, -eventLabel.bounds.width / 2)
-            val y = if (top) {
-                dateAxisY - DEFAULT_PX_FROM_AXIS - eventLabel.bounds.height
-            } else {
-                dateAxisY + DEFAULT_PX_FROM_AXIS
-            }
-
-            eventLabel.location = DynamicPoint(xDate, y, view)
+            eventLabel.moveToRow(if (top) 1 else -1)
             top = !top
         }
+    }
+
+    private fun EventLabel.moveToRow(row: Int) {
+        if (row == 0) {
+            error("Row 0 does not exist")
+        }
+
+        val rowList = eventLabelsByRow.getOrPut(row) { mutableListOf() }
+        if (this !in rowList) {
+            rowList += this
+        }
+
+        val newY = if (row > 0) {
+            dateAxisY - MIN_DISTANCE_FROM_AXIS - bounds.height -
+                    (bounds.height + EVENT_LABEL_PADDING) * (row - 1)
+        } else {
+            dateAxisY + MIN_DISTANCE_FROM_AXIS +
+                    (bounds.height + EVENT_LABEL_PADDING) * (-row - 1)
+        }
+
+        location = location.copy(y = newY)
     }
 
     private fun align(eventLabels: List<EventLabel>) {
