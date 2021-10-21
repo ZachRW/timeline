@@ -16,15 +16,24 @@ class EventLabelLayouter(
     private val eventLabelsByRow = mutableMapOf<Int, MutableList<EventLabel>>()
 
     fun layout() {
+        eventLabelsByRow.clear()
         moveToDefaultPositions()
 
-        eventLabelsByRow.values.forEach(::align)
+        for (eventLabelRow in eventLabelsByRow.values) {
+            do {
+                val tooClose = eventLabelRow.getTooClose()
+                tooClose.forEach(::align)
+            } while (tooClose.isNotEmpty())
+        }
     }
 
     private fun moveToDefaultPositions() {
         var top = true
 
         for (eventLabel in eventLabels) {
+            eventLabel.location =
+                DynamicPoint(view.datePlusPx(eventLabel.date, -eventLabel.bounds.width / 2), 0.0, view)
+
             eventLabel.moveToRow(if (top) 1 else -1)
             top = !top
         }
@@ -35,10 +44,7 @@ class EventLabelLayouter(
             error("Row 0 does not exist")
         }
 
-        val rowList = eventLabelsByRow.getOrPut(row) { mutableListOf() }
-        if (this !in rowList) {
-            rowList += this
-        }
+        eventLabelsByRow.getOrPut(row) { mutableListOf() } += this
 
         val newY = if (row > 0) {
             dateAxisY - MIN_DISTANCE_FROM_AXIS - bounds.height -
@@ -72,26 +78,60 @@ class EventLabelLayouter(
         }
     }
 
-    private fun getIntersecting(): List<EventLabel> {
-        TODO("fix returning duplicates")
-
-//        val intersecting = mutableListOf<EventLabel>()
-//
-//        for (eventLabel1 in eventLabels) {
-//            for (eventLabel2 in eventLabels - intersecting) {
-//                if (eventLabel1.bounds.intersects(eventLabel2.bounds)) {
-//                    intersecting += eventLabel1
-//                    intersecting += eventLabel2
-//                }
-//            }
-//        }
-//        return intersecting
-    }
-
     private fun EventLabel.isMoveValid(newLocation: DynamicPoint): Boolean {
         val newBounds = bounds.copy(location = newLocation)
         return (eventLabels - this).any {
             it.bounds.intersects(newBounds)
         }
+    }
+}
+
+// FIXME - Skips EventLabels between groups
+private fun List<EventLabel>.getTooClose(): List<List<EventLabel>> {
+    val tooClose = mutableListOf<List<EventLabel>>()
+
+    if (isEmpty()) {
+        return tooClose
+    }
+
+    val iterator = iterator()
+    while (iterator.hasNext()) {
+        val group = iterator.getNextTooCloseGroup()
+        if (group.isNotEmpty()) {
+            tooClose += group
+        }
+    }
+
+    return tooClose
+}
+
+private fun Iterator<EventLabel>.getNextTooCloseGroup(): List<EventLabel> {
+    if (!hasNext()) {
+        return emptyList()
+    }
+
+    val group = mutableListOf<EventLabel>()
+    val firstEventLabel = next()
+    group += firstEventLabel
+    var prevExpandedBounds =
+        firstEventLabel.bounds.grow(EVENT_LABEL_PADDING / 2, 0.0)
+    while (hasNext()) {
+        val eventLabel = next()
+        val expandedBounds =
+            eventLabel.bounds.grow(EVENT_LABEL_PADDING / 2, 0.0)
+
+        if (expandedBounds.intersects(prevExpandedBounds)) {
+            group += eventLabel
+        } else {
+            break
+        }
+
+        prevExpandedBounds = expandedBounds
+    }
+
+    return if (group.size == 1) {
+        emptyList()
+    } else {
+        group
     }
 }
