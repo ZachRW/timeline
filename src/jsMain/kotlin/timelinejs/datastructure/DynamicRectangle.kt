@@ -73,7 +73,7 @@ data class DynamicRectangle(
     fun pointToPoint(start: StaticPoint, end: DynamicPoint) =
         copy(location = end - start)
 
-    fun grow(deltaWidth: Double, deltaHeight: Double) =
+    fun grow(deltaWidth: Double = 0.0, deltaHeight: Double = 0.0) =
         copy(
             width = width + deltaWidth,
             height = height + deltaHeight
@@ -85,7 +85,7 @@ data class DynamicRectangle(
     fun grow(deltaSize: Size) =
         copy(size = size + deltaSize)
 
-    fun centeredGrow(deltaWidth: Double, deltaHeight: Double) =
+    fun centeredGrow(deltaWidth: Double = 0.0, deltaHeight: Double = 0.0) =
         fromEdges(
             left = view.datePlusPx(left, deltaWidth),
             top = top + deltaHeight,

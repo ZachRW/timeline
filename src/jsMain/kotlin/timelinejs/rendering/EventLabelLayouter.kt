@@ -2,6 +2,7 @@ package timelinejs.rendering
 
 import timelinejs.View
 import timelinejs.datastructure.DynamicPoint
+import timelinejs.datastructure.DynamicRectangle
 import timelinejs.rendering.compound.renderable.EventLabel
 
 private const val MIN_DISTANCE_FROM_AXIS = 100.0
@@ -86,7 +87,6 @@ class EventLabelLayouter(
     }
 }
 
-// FIXME - Skips EventLabels between groups
 private fun List<EventLabel>.getTooClose(): List<List<EventLabel>> {
     val tooClose = mutableListOf<List<EventLabel>>()
 
@@ -94,44 +94,41 @@ private fun List<EventLabel>.getTooClose(): List<List<EventLabel>> {
         return tooClose
     }
 
-    val iterator = iterator()
-    while (iterator.hasNext()) {
-        val group = iterator.getNextTooCloseGroup()
-        if (group.isNotEmpty()) {
-            tooClose += group
+    var groupStartIndex = 0
+    while (groupStartIndex < size) {
+        val groupEndIndex = getNextTooCloseGroup(groupStartIndex)
+        if (groupEndIndex - groupStartIndex > 1) {
+            tooClose += subList(groupStartIndex, groupEndIndex)
         }
+        groupStartIndex = groupEndIndex
     }
 
     return tooClose
 }
 
-private fun Iterator<EventLabel>.getNextTooCloseGroup(): List<EventLabel> {
-    if (!hasNext()) {
-        return emptyList()
+/**
+ * @param startIndex the first index of the group (inclusive).
+ * @return the last index of the group (exclusive).
+ */
+private fun List<EventLabel>.getNextTooCloseGroup(startIndex: Int): Int {
+    if (startIndex >= lastIndex) {
+        return size
     }
 
-    val group = mutableListOf<EventLabel>()
-    val firstEventLabel = next()
-    group += firstEventLabel
-    var prevExpandedBounds =
-        firstEventLabel.bounds.grow(EVENT_LABEL_PADDING / 2, 0.0)
-    while (hasNext()) {
-        val eventLabel = next()
-        val expandedBounds =
-            eventLabel.bounds.grow(EVENT_LABEL_PADDING / 2, 0.0)
+    var index = startIndex
+    var prevExpandedBounds: DynamicRectangle
+    var expandedBounds = this[startIndex].getExpandedBounds()
 
-        if (expandedBounds.intersects(prevExpandedBounds)) {
-            group += eventLabel
-        } else {
-            break
-        }
-
+    do {
+        index++
         prevExpandedBounds = expandedBounds
-    }
+        expandedBounds = this[index].getExpandedBounds()
+    } while (index < lastIndex && expandedBounds.intersects(prevExpandedBounds))
 
-    return if (group.size == 1) {
-        emptyList()
-    } else {
-        group
-    }
+    return index
 }
+
+private fun EventLabel.getExpandedBounds(): DynamicRectangle {
+    return bounds.centeredGrow(deltaWidth = EVENT_LABEL_PADDING / 2)
+}
+
