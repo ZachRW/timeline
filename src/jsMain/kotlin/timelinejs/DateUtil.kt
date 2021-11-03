@@ -16,10 +16,10 @@ infix fun Date.plusMs(ms: Double): Date =
 
 data class DateRange(
     val start: Date,
-    val end: Date
+    val endInclusive: Date
 ) {
     operator fun contains(value: Date) =
-        value.getTime() in start.getTime()..end.getTime()
+        value.getTime() in start.getTime()..endInclusive.getTime()
 }
 
 fun Date.Companion.fromYear(year: Int) =

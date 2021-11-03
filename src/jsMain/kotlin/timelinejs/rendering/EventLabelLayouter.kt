@@ -8,6 +8,8 @@ import timelinejs.rendering.compound.renderable.EventLabel
 private const val MIN_DISTANCE_FROM_AXIS = 100.0
 private const val EVENT_LABEL_PADDING = 5.0
 
+var maxLoops = 1
+
 class EventLabelLayouter(
     eventLabels: List<EventLabel>,
     private val dateAxisY: Double,
@@ -21,9 +23,15 @@ class EventLabelLayouter(
         moveToDefaultPositions()
 
         for (eventLabelRow in eventLabelsByRow.values) {
+            var loopCount = 0
             do {
                 val tooClose = eventLabelRow.getTooClose()
+                if (loopCount == maxLoops && tooClose.isNotEmpty()) {
+                    console.error("Reached maxLoops of $maxLoops and EventLabels are still too close.")
+                    break
+                }
                 tooClose.forEach(::align)
+                loopCount++
             } while (tooClose.isNotEmpty())
         }
     }
@@ -85,50 +93,53 @@ class EventLabelLayouter(
             it.bounds.intersects(newBounds)
         }
     }
-}
 
-private fun List<EventLabel>.getTooClose(): List<List<EventLabel>> {
-    val tooClose = mutableListOf<List<EventLabel>>()
+    private fun List<EventLabel>.getTooClose(): List<List<EventLabel>> {
+        val tooClose = mutableListOf<List<EventLabel>>()
 
-    if (isEmpty()) {
+        if (isEmpty()) {
+            return tooClose
+        }
+
+        var groupStartIndex = 0
+        while (groupStartIndex < size) {
+            val groupEndIndex = getNextTooCloseGroup(groupStartIndex)
+            if (groupEndIndex - groupStartIndex > 1) {
+                tooClose += subList(groupStartIndex, groupEndIndex)
+            }
+            groupStartIndex = groupEndIndex
+        }
+
         return tooClose
     }
 
-    var groupStartIndex = 0
-    while (groupStartIndex < size) {
-        val groupEndIndex = getNextTooCloseGroup(groupStartIndex)
-        if (groupEndIndex - groupStartIndex > 1) {
-            tooClose += subList(groupStartIndex, groupEndIndex)
+    /**
+     * @param startIndex the first index of the group (inclusive).
+     * @return the last index of the group (exclusive).
+     */
+    private fun List<EventLabel>.getNextTooCloseGroup(startIndex: Int): Int {
+        if (startIndex >= lastIndex) {
+            return size
         }
-        groupStartIndex = groupEndIndex
-    }
 
-    return tooClose
-}
+        var prevExpandedXRange = this[startIndex].getExpandedXRange()
+        for ((index, eventLabel) in withIndex().drop(startIndex + 1)) {
+            val expandedXRange = eventLabel.getExpandedXRange()
+            if (!expandedXRange.overlaps(prevExpandedXRange)) {
+                return index
+            }
+            prevExpandedXRange = expandedXRange
+        }
 
-/**
- * @param startIndex the first index of the group (inclusive).
- * @return the last index of the group (exclusive).
- */
-private fun List<EventLabel>.getNextTooCloseGroup(startIndex: Int): Int {
-    if (startIndex >= lastIndex) {
         return size
     }
 
-    var index = startIndex
-    var prevExpandedBounds: DynamicRectangle
-    var expandedBounds = this[startIndex].getExpandedBounds()
-
-    do {
-        index++
-        prevExpandedBounds = expandedBounds
-        expandedBounds = this[index].getExpandedBounds()
-    } while (index < lastIndex && expandedBounds.intersects(prevExpandedBounds))
-
-    return index
+    private fun EventLabel.getExpandedXRange(): ClosedRange<Double> {
+        return (view.dateToPx(bounds.left) - EVENT_LABEL_PADDING / 2)..
+                (view.dateToPx(bounds.right) + EVENT_LABEL_PADDING / 2)
+    }
 }
 
-private fun EventLabel.getExpandedBounds(): DynamicRectangle {
-    return bounds.centeredGrow(deltaWidth = EVENT_LABEL_PADDING / 2)
+private fun <T : Comparable<T>> ClosedRange<T>.overlaps(other: ClosedRange<T>): Boolean {
+    return start <= other.endInclusive && other.start <= endInclusive
 }
-

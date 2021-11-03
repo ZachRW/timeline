@@ -1,0 +1,57 @@
+{
+  "seriesList": [
+    {
+      "namedDateRanges": [],
+      "events": [
+        {
+          "name": "1111111111",
+          "date": {
+            "year": 2021,
+            "month": 1,
+            "day": 1
+          }
+        },
+        {
+          "name": "2222222222",
+          "date": {
+            "year": 2022,
+            "month": 1,
+            "day": 1
+          }
+        },
+        {
+          "name": "3333333333",
+          "date": {
+            "year": 2023,
+            "month": 1,
+            "day": 1
+          }
+        },
+        {
+          "name": "4444444444",
+          "date": {
+            "year": 2024,
+            "month": 1,
+            "day": 1
+          }
+        },
+        {
+          "name": "5555555555",
+          "date": {
+            "year": 2025,
+            "month": 1,
+            "day": 1
+          }
+        },
+        {
+          "name": "6666666666",
+          "date": {
+            "year": 2026,
+            "month": 1,
+            "day": 1
+          }
+        }
+      ]
+    }
+  ]
+}
