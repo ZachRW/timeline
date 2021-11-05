@@ -3,13 +3,14 @@ package timelinejs.rendering
 import timelinejs.datastructure.OpenIntRange
 import timelinejs.datastructure.open
 import timelinejs.View
-import timelinejs.datastructure.DynamicPoint
 import timelinejs.rendering.compound.renderable.EventLabel
 
-private const val MIN_DISTANCE_FROM_AXIS = 100.0
+private const val EVENT_LABEL_MIN_DIST_FROM_AXIS = 100.0
 private const val EVENT_LABEL_PADDING = 5.0
+private const val STEM_MIN_DIST_FROM_EDGE_OF_EVENT_LABEL = 5.0
 
-var align = true
+// debug flag
+var reposition = true
 
 class EventLabelLayouter(
     eventLabels: List<EventLabel>,
@@ -21,35 +22,47 @@ class EventLabelLayouter(
 
     fun layout() {
         eventLabelsByRow.clear()
-        moveToDefaultPositions()
+        putEventLabelsInAlternatingRows()
+    }
 
-        if (align) {
-            alignRows()
+    private fun positionEventLabels() {
+        for (eventLabelRow in eventLabelsByRow.values) {
+            moveRowEventLabelsToUnalignedPositions(eventLabelRow)
+            if (!reposition) continue // debug flag
+
+            val tooClose = eventLabelRow.getTooClose()
+            do {
+                for (group in tooClose) {
+                    if (group.size > 1) {
+                        alignAndChangeRowsOfGroupEventLabels(group)
+                    }
+                }
+            } while (tooClose.mergeGroups())
         }
     }
 
-    private fun moveToDefaultPositions() {
+    private fun putEventLabelsInAlternatingRows() {
         var top = true
 
         for (eventLabel in eventLabels) {
-            eventLabel.location =
-                DynamicPoint(view.datePlusPx(eventLabel.date, -eventLabel.bounds.width / 2), 0.0, view)
-
             eventLabel.moveToRow(if (top) 1 else -1)
             top = !top
         }
     }
 
-    private fun alignRows() {
-        for (eventLabelRow in eventLabelsByRow.values) {
-            val tooClose = eventLabelRow.getTooClose()
-            do {
-                for (group in tooClose) {
-                    if (group.size > 1) {
-                        align(group)
-                    }
-                }
-            } while (tooClose.mergeGroups())
+    private fun moveRowEventLabelsToUnalignedPositions(eventLabelRow: List<EventLabel>) {
+        for (eventLabel in eventLabelRow) {
+            eventLabel.location = eventLabel.location.copy(
+                xDate = view.datePlusPx(eventLabel.date, -eventLabel.bounds.width / 2)
+            )
+        }
+    }
+
+    private fun alignAndChangeRowsOfGroupEventLabels(group: List<EventLabel>) {
+        alignGroup(group)
+        val stemErrors = group.map(EventLabel::stemError)
+        if (stemErrors.any { it > 0 }) {
+            TODO()
         }
     }
 
@@ -90,17 +103,17 @@ class EventLabelLayouter(
         eventLabelsByRow.getOrPut(row) { mutableListOf() } += this
 
         val newY = if (row > 0) {
-            dateAxisY - MIN_DISTANCE_FROM_AXIS - bounds.height -
+            dateAxisY - EVENT_LABEL_MIN_DIST_FROM_AXIS - bounds.height -
                     (bounds.height + EVENT_LABEL_PADDING) * (row - 1)
         } else {
-            dateAxisY + MIN_DISTANCE_FROM_AXIS +
+            dateAxisY + EVENT_LABEL_MIN_DIST_FROM_AXIS +
                     (bounds.height + EVENT_LABEL_PADDING) * (-row - 1)
         }
 
         location = location.copy(y = newY)
     }
 
-    private fun align(eventLabels: List<EventLabel>) {
+    private fun alignGroup(eventLabels: List<EventLabel>) {
         val datePxs = eventLabels.map { view.dateToPx(it.date) }
         val labelCenterPxs = mutableListOf(0.0)
 
@@ -167,4 +180,8 @@ class EventLabelLayouter(
         return (view.dateToPx(bounds.left) - EVENT_LABEL_PADDING / 2).toInt() open
                 (view.dateToPx(bounds.right) + EVENT_LABEL_PADDING / 2).toInt()
     }
+}
+
+private fun EventLabel.stemError(): Double {
+    TODO()
 }
