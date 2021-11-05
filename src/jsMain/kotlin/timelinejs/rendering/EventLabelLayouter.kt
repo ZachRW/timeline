@@ -1,14 +1,15 @@
 package timelinejs.rendering
 
+import timelinejs.datastructure.OpenIntRange
+import timelinejs.datastructure.open
 import timelinejs.View
 import timelinejs.datastructure.DynamicPoint
-import timelinejs.datastructure.DynamicRectangle
 import timelinejs.rendering.compound.renderable.EventLabel
 
 private const val MIN_DISTANCE_FROM_AXIS = 100.0
 private const val EVENT_LABEL_PADDING = 5.0
 
-var maxLoops = 1
+var align = true
 
 class EventLabelLayouter(
     eventLabels: List<EventLabel>,
@@ -22,17 +23,8 @@ class EventLabelLayouter(
         eventLabelsByRow.clear()
         moveToDefaultPositions()
 
-        for (eventLabelRow in eventLabelsByRow.values) {
-            var loopCount = 0
-            do {
-                val tooClose = eventLabelRow.getTooClose()
-                if (loopCount == maxLoops && tooClose.isNotEmpty()) {
-                    console.error("Reached maxLoops of $maxLoops and EventLabels are still too close.")
-                    break
-                }
-                tooClose.forEach(::align)
-                loopCount++
-            } while (tooClose.isNotEmpty())
+        if (align) {
+            alignRows()
         }
     }
 
@@ -46,6 +38,48 @@ class EventLabelLayouter(
             eventLabel.moveToRow(if (top) 1 else -1)
             top = !top
         }
+    }
+
+    private fun alignRows() {
+        for (eventLabelRow in eventLabelsByRow.values) {
+            val tooClose = eventLabelRow.getTooClose()
+            do {
+                for (group in tooClose) {
+                    if (group.size > 1) {
+                        align(group)
+                    }
+                }
+            } while (tooClose.mergeGroups())
+        }
+    }
+
+    /**
+     * @return whether any groups were merged
+     */
+    private fun MutableList<List<EventLabel>>.mergeGroups(): Boolean {
+        if (size <= 1) {
+            return false
+        }
+
+        var hasMerged = false
+        val iterator = listIterator()
+        var prevGroup = iterator.next()
+        for (group in iterator) {
+            if (prevGroup.last().expandedXOverlaps(group[0])) {
+                val mergedGroup = prevGroup + group
+                with(iterator) {
+                    remove()
+                    previous()
+                    set(mergedGroup)
+                }
+                prevGroup = mergedGroup
+                hasMerged = true
+            } else {
+                prevGroup = group
+            }
+        }
+
+        return hasMerged
     }
 
     private fun EventLabel.moveToRow(row: Int) {
@@ -87,14 +121,7 @@ class EventLabelLayouter(
         }
     }
 
-    private fun EventLabel.isMoveValid(newLocation: DynamicPoint): Boolean {
-        val newBounds = bounds.copy(location = newLocation)
-        return (eventLabels - this).any {
-            it.bounds.intersects(newBounds)
-        }
-    }
-
-    private fun List<EventLabel>.getTooClose(): List<List<EventLabel>> {
+    private fun List<EventLabel>.getTooClose(): MutableList<List<EventLabel>> {
         val tooClose = mutableListOf<List<EventLabel>>()
 
         if (isEmpty()) {
@@ -104,9 +131,7 @@ class EventLabelLayouter(
         var groupStartIndex = 0
         while (groupStartIndex < size) {
             val groupEndIndex = getNextTooCloseGroup(groupStartIndex)
-            if (groupEndIndex - groupStartIndex > 1) {
-                tooClose += subList(groupStartIndex, groupEndIndex)
-            }
+            tooClose += subList(groupStartIndex, groupEndIndex)
             groupStartIndex = groupEndIndex
         }
 
@@ -134,12 +159,12 @@ class EventLabelLayouter(
         return size
     }
 
-    private fun EventLabel.getExpandedXRange(): ClosedRange<Double> {
-        return (view.dateToPx(bounds.left) - EVENT_LABEL_PADDING / 2)..
-                (view.dateToPx(bounds.right) + EVENT_LABEL_PADDING / 2)
+    private fun EventLabel.expandedXOverlaps(other: EventLabel): Boolean {
+        return getExpandedXRange().overlaps(other.getExpandedXRange())
     }
-}
 
-private fun <T : Comparable<T>> ClosedRange<T>.overlaps(other: ClosedRange<T>): Boolean {
-    return start <= other.endInclusive && other.start <= endInclusive
+    private fun EventLabel.getExpandedXRange(): OpenIntRange {
+        return (view.dateToPx(bounds.left) - EVENT_LABEL_PADDING / 2).toInt() open
+                (view.dateToPx(bounds.right) + EVENT_LABEL_PADDING / 2).toInt()
+    }
 }
