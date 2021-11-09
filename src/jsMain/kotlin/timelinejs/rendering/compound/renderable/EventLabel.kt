@@ -8,10 +8,11 @@ import timelinejs.rendering.compound.style.EventLabelStyle
 import timelinejs.rendering.simple.renderable.DynamicLine
 import kotlin.js.Date
 
-class EventLabel(
+open class EventLabel(
     private val textStr: String,
     val date: Date,
     private val stemBaseY: Double,
+    private val dateAxisY: Double,
     private val style: EventLabelStyle,
     private val renderer: Renderer,
     view: View
@@ -19,6 +20,21 @@ class EventLabel(
     private var enclosedText: EnclosedText =
         createEnclosedText(DynamicPoint(date, 0.0, view))
     private var stem: DynamicLine = createStem()
+
+    open var row = 0
+        set(value) {
+            field = value
+
+            val newY = if (row > 0) {
+                dateAxisY - MIN_DIST_FROM_AXIS - bounds.height -
+                        (bounds.height + PADDING) * (row - 1)
+            } else {
+                dateAxisY + MIN_DIST_FROM_AXIS +
+                        (bounds.height + PADDING) * (-row - 1)
+            }
+
+            location = location.copy(y = newY)
+        }
 
     val bounds get() = enclosedText.bounds
     var location: DynamicPoint
@@ -56,5 +72,11 @@ class EventLabel(
             renderer,
             view
         )
+    }
+
+    companion object {
+        const val MIN_DIST_FROM_AXIS = 100.0
+        const val PADDING = 5.0
+        const val STEM_MIN_DIST_FROM_EDGE = 5.0
     }
 }

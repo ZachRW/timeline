@@ -5,10 +5,6 @@ import timelinejs.datastructure.open
 import timelinejs.View
 import timelinejs.rendering.compound.renderable.EventLabel
 
-private const val EVENT_LABEL_MIN_DIST_FROM_AXIS = 100.0
-private const val EVENT_LABEL_PADDING = 5.0
-private const val STEM_MIN_DIST_FROM_EDGE_OF_EVENT_LABEL = 5.0
-
 // debug flag
 var reposition = true
 
@@ -59,10 +55,23 @@ class EventLabelLayouter(
     }
 
     private fun alignAndChangeRowsOfGroupEventLabels(group: List<EventLabel>) {
-        alignGroup(group)
-        val stemErrors = group.map(EventLabel::stemError)
-        if (stemErrors.any { it > 0 }) {
-            TODO()
+        val mutableGroup = group.toMutableList()
+        alignGroup(mutableGroup)
+
+        var eventLabelsWithStemError: Map<EventLabel, Double>
+        while (
+            run {
+                eventLabelsWithStemError = group.associateWith(EventLabel::stemError)
+                eventLabelsWithStemError.any { (_, error) -> error > 0 }
+            }
+        ) {
+            val (maxErrorEventLabel, _) =
+                eventLabelsWithStemError.maxByOrNull { (_, error) -> error }!!
+            if (maxErrorEventLabel.row > 0) {
+                maxErrorEventLabel.moveToRow(maxErrorEventLabel.row + 1)
+            }
+            mutableGroup -= maxErrorEventLabel
+            alignGroup(mutableGroup)
         }
     }
 
@@ -95,22 +104,18 @@ class EventLabelLayouter(
         return hasMerged
     }
 
-    private fun EventLabel.moveToRow(row: Int) {
-        if (row == 0) {
+    private fun EventLabel.moveToRow(newRow: Int) {
+        if (newRow == 0) {
             error("Row 0 does not exist")
         }
-
-        eventLabelsByRow.getOrPut(row) { mutableListOf() } += this
-
-        val newY = if (row > 0) {
-            dateAxisY - EVENT_LABEL_MIN_DIST_FROM_AXIS - bounds.height -
-                    (bounds.height + EVENT_LABEL_PADDING) * (row - 1)
-        } else {
-            dateAxisY + EVENT_LABEL_MIN_DIST_FROM_AXIS +
-                    (bounds.height + EVENT_LABEL_PADDING) * (-row - 1)
+        if (row != 0) {
+            val rowEventLabels = eventLabelsByRow[row]
+                ?: error("eventLabelsByRow does not match eventLabel's row")
+            rowEventLabels -= this
         }
 
-        location = location.copy(y = newY)
+        eventLabelsByRow.getOrPut(newRow) { mutableListOf() } += this
+        row = newRow
     }
 
     private fun alignGroup(eventLabels: List<EventLabel>) {
@@ -120,7 +125,7 @@ class EventLabelLayouter(
         var prevHalfWidth = eventLabels[0].bounds.width / 2
         for (eventLabel in eventLabels.subList(1, eventLabels.size)) {
             val halfWidth = eventLabel.bounds.width / 2
-            labelCenterPxs += labelCenterPxs.last() + prevHalfWidth + halfWidth + EVENT_LABEL_PADDING
+            labelCenterPxs += labelCenterPxs.last() + prevHalfWidth + halfWidth + EventLabel.PADDING
             prevHalfWidth = halfWidth
         }
 
@@ -130,7 +135,7 @@ class EventLabelLayouter(
         for (eventLabel in eventLabels) {
             eventLabel.location =
                 eventLabel.location.copy(xDate = view.pxToDate(eventLabelPx))
-            eventLabelPx += eventLabel.bounds.width + EVENT_LABEL_PADDING
+            eventLabelPx += eventLabel.bounds.width + EventLabel.PADDING
         }
     }
 
@@ -177,8 +182,8 @@ class EventLabelLayouter(
     }
 
     private fun EventLabel.getExpandedXRange(): OpenIntRange {
-        return (view.dateToPx(bounds.left) - EVENT_LABEL_PADDING / 2).toInt() open
-                (view.dateToPx(bounds.right) + EVENT_LABEL_PADDING / 2).toInt()
+        return (view.dateToPx(bounds.left) - EventLabel.PADDING / 2).toInt() open
+                (view.dateToPx(bounds.right) + EventLabel.PADDING / 2).toInt()
     }
 }
 
