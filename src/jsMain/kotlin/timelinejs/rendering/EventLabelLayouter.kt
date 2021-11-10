@@ -10,7 +10,6 @@ var reposition = true
 
 class EventLabelLayouter(
     eventLabels: List<EventLabel>,
-    private val dateAxisY: Double,
     private val view: View
 ) {
     private val eventLabels = eventLabels.sortedBy { it.location.xDate.getTime() }
@@ -19,6 +18,7 @@ class EventLabelLayouter(
     fun layout() {
         eventLabelsByRow.clear()
         putEventLabelsInAlternatingRows()
+        positionEventLabels()
     }
 
     private fun positionEventLabels() {
@@ -54,14 +54,13 @@ class EventLabelLayouter(
         }
     }
 
-    private fun alignAndChangeRowsOfGroupEventLabels(group: List<EventLabel>) {
-        val mutableGroup = group.toMutableList()
-        alignGroup(mutableGroup)
+    private fun alignAndChangeRowsOfGroupEventLabels(group: MutableList<EventLabel>) {
+        alignGroup(group)
 
         var eventLabelsWithStemError: Map<EventLabel, Double>
         while (
             run {
-                eventLabelsWithStemError = group.associateWith(EventLabel::stemError)
+                eventLabelsWithStemError = group.associateWith { it.stemError() }
                 eventLabelsWithStemError.any { (_, error) -> error > 0 }
             }
         ) {
@@ -70,15 +69,15 @@ class EventLabelLayouter(
             if (maxErrorEventLabel.row > 0) {
                 maxErrorEventLabel.moveToRow(maxErrorEventLabel.row + 1)
             }
-            mutableGroup -= maxErrorEventLabel
-            alignGroup(mutableGroup)
+            group -= maxErrorEventLabel
+            alignGroup(group)
         }
     }
 
     /**
      * @return whether any groups were merged
      */
-    private fun MutableList<List<EventLabel>>.mergeGroups(): Boolean {
+    private fun MutableList<MutableList<EventLabel>>.mergeGroups(): Boolean {
         if (size <= 1) {
             return false
         }
@@ -88,7 +87,7 @@ class EventLabelLayouter(
         var prevGroup = iterator.next()
         for (group in iterator) {
             if (prevGroup.last().expandedXOverlaps(group[0])) {
-                val mergedGroup = prevGroup + group
+                val mergedGroup = (prevGroup + group).toMutableList()
                 with(iterator) {
                     remove()
                     previous()
@@ -139,8 +138,8 @@ class EventLabelLayouter(
         }
     }
 
-    private fun List<EventLabel>.getTooClose(): MutableList<List<EventLabel>> {
-        val tooClose = mutableListOf<List<EventLabel>>()
+    private fun MutableList<EventLabel>.getTooClose(): MutableList<MutableList<EventLabel>> {
+        val tooClose = mutableListOf<MutableList<EventLabel>>()
 
         if (isEmpty()) {
             return tooClose
@@ -185,8 +184,22 @@ class EventLabelLayouter(
         return (view.dateToPx(bounds.left) - EventLabel.PADDING / 2).toInt() open
                 (view.dateToPx(bounds.right) + EventLabel.PADDING / 2).toInt()
     }
-}
 
-private fun EventLabel.stemError(): Double {
-    TODO()
+    private fun EventLabel.stemError(): Double {
+        val stemX = view.dateToPx(date)
+
+        val minX = view.dateToPx(bounds.left) + EventLabel.STEM_MIN_DIST_FROM_EDGE
+        val leftError = minX - stemX
+        if (leftError > 0) {
+            return leftError
+        }
+
+        val maxX = view.dateToPx(bounds.right) - EventLabel.STEM_MIN_DIST_FROM_EDGE
+        val rightError = stemX - maxX
+        if (rightError > 0) {
+            return rightError
+        }
+
+        return 0.0
+    }
 }

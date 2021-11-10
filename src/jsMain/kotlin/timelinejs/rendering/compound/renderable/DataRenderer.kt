@@ -19,7 +19,7 @@ class DataRenderer(
     private val seriesViews: List<SeriesView> = data.toSeriesViews()
     private val eventLabels: List<EventLabel>
         get() = seriesViews.flatMap { it.eventLabels }
-    private val layouter = EventLabelLayouter(eventLabels, dateAxisY, view)
+    private val layouter = EventLabelLayouter(eventLabels, view)
 
     init {
         update()
@@ -61,7 +61,7 @@ private class SeriesView(
             EventLabel(
                 textStr = jsEvent.name,
                 date = jsEvent.date,
-                stemBaseY = dateAxisY,
+                dateAxisY = dateAxisY,
                 style = eventLabelStyle,
                 renderer = renderer,
                 view = view

@@ -11,7 +11,6 @@ import kotlin.js.Date
 open class EventLabel(
     private val textStr: String,
     val date: Date,
-    private val stemBaseY: Double,
     private val dateAxisY: Double,
     private val style: EventLabelStyle,
     private val renderer: Renderer,
@@ -59,14 +58,14 @@ open class EventLabel(
         )
 
     private fun createStem(): DynamicLine {
-        val stemAttachY = if (stemBaseY > enclosedText.bounds.y) {
+        val stemAttachY = if (dateAxisY > enclosedText.bounds.y) {
             enclosedText.bounds.bottom
         } else {
             enclosedText.bounds.top
         }
 
         return DynamicLine(
-            DynamicPoint(date, stemBaseY, view),
+            DynamicPoint(date, dateAxisY, view),
             DynamicPoint(date, stemAttachY, view),
             style.stemStyle,
             renderer,
