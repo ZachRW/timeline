@@ -4,6 +4,7 @@ import timelinejs.datastructure.OpenIntRange
 import timelinejs.datastructure.open
 import timelinejs.View
 import timelinejs.rendering.compound.renderable.EventLabel
+import kotlin.math.sign
 
 // debug flag
 var reposition = true
@@ -16,9 +17,16 @@ class EventLabelLayouter(
     private val eventLabelsByRow = mutableMapOf<Int, MutableList<EventLabel>>()
 
     fun layout() {
-        eventLabelsByRow.clear()
+        resetRows()
         putEventLabelsInAlternatingRows()
         positionEventLabels()
+    }
+
+    private fun resetRows() {
+        eventLabelsByRow.clear()
+        for (eventLabel in eventLabels) {
+            eventLabel.row = 0
+        }
     }
 
     private fun positionEventLabels() {
@@ -66,11 +74,13 @@ class EventLabelLayouter(
         ) {
             val (maxErrorEventLabel, _) =
                 eventLabelsWithStemError.maxByOrNull { (_, error) -> error }!!
-            if (maxErrorEventLabel.row > 0) {
-                maxErrorEventLabel.moveToRow(maxErrorEventLabel.row + 1)
+            with(maxErrorEventLabel) {
+                moveToRow(row + row.sign)
             }
             group -= maxErrorEventLabel
-            alignGroup(group)
+            if (group.size > 1) {
+                alignGroup(group)
+            }
         }
     }
 
@@ -148,7 +158,7 @@ class EventLabelLayouter(
         var groupStartIndex = 0
         while (groupStartIndex < size) {
             val groupEndIndex = getNextTooCloseGroup(groupStartIndex)
-            tooClose += subList(groupStartIndex, groupEndIndex)
+            tooClose += subList(groupStartIndex, groupEndIndex).toMutableList()
             groupStartIndex = groupEndIndex
         }
 

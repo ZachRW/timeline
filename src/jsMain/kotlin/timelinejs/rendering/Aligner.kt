@@ -47,6 +47,12 @@ private class LinearPieceWiseFunction(
     private val leftSlope: Double = -1.0,
     private val rightSlope: Double = 1.0
 ) {
+    init {
+        if (points.size <= 1) {
+            error("Fewer than 2 points")
+        }
+    }
+
     private val xIntercept: Double
         get() {
             var prevPoint = points[0]

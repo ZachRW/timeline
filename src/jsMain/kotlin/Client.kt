@@ -45,10 +45,14 @@ class TimelineHandler(timelineData: TimelineData) : InputListener {
 
 fun main() {
     MainScope().launch {
-        val timelineData = getTimelineData()
+        try {
+            val timelineData = getTimelineData()
 
-        timelineHandler = TimelineHandler(timelineData)
-        timelineHandler!!.start()
+            timelineHandler = TimelineHandler(timelineData)
+            timelineHandler!!.start()
+        } catch (e: Exception) {
+            console.error(e.stackTraceToString())
+        }
     }
 }
 

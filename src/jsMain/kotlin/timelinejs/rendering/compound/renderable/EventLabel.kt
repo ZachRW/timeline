@@ -23,6 +23,7 @@ open class EventLabel(
     open var row = 0
         set(value) {
             field = value
+            if (row == 0) return
 
             val newY = if (row > 0) {
                 dateAxisY - MIN_DIST_FROM_AXIS - bounds.height -
@@ -76,6 +77,6 @@ open class EventLabel(
     companion object {
         const val MIN_DIST_FROM_AXIS = 100.0
         const val PADDING = 5.0
-        const val STEM_MIN_DIST_FROM_EDGE = 5.0
+        const val STEM_MIN_DIST_FROM_EDGE = 15.0
     }
 }
