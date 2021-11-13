@@ -30,8 +30,8 @@ class EventLabelLayouter(
     }
 
     private fun positionEventLabels() {
-        for (eventLabelRow in eventLabelsByRow.values) {
-            moveRowEventLabelsToUnalignedPositions(eventLabelRow)
+        for ((_, eventLabelRow) in eventLabelsByRow) {
+            eventLabelRow.forEach { it.moveToDefaultX() }
             if (!reposition) continue // debug flag
 
             val tooClose = eventLabelRow.getTooClose()
@@ -54,12 +54,10 @@ class EventLabelLayouter(
         }
     }
 
-    private fun moveRowEventLabelsToUnalignedPositions(eventLabelRow: List<EventLabel>) {
-        for (eventLabel in eventLabelRow) {
-            eventLabel.location = eventLabel.location.copy(
-                xDate = view.datePlusPx(eventLabel.date, -eventLabel.bounds.width / 2)
-            )
-        }
+    private fun EventLabel.moveToDefaultX() {
+        location = location.copy(
+            xDate = view.datePlusPx(date, -bounds.width / 2)
+        )
     }
 
     private fun alignAndChangeRowsOfGroupEventLabels(group: MutableList<EventLabel>) {
@@ -80,6 +78,10 @@ class EventLabelLayouter(
             group -= maxErrorEventLabel
             if (group.size > 1) {
                 alignGroup(group)
+            } else {
+                if (group.isEmpty()) error("group shouldn't be empty")
+                group[0].moveToDefaultX()
+                return
             }
         }
     }
@@ -87,6 +89,7 @@ class EventLabelLayouter(
     /**
      * @return whether any groups were merged
      */
+    // FIXME
     private fun MutableList<MutableList<EventLabel>>.mergeGroups(): Boolean {
         if (size <= 1) {
             return false
