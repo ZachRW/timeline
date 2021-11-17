@@ -89,7 +89,6 @@ class EventLabelLayouter(
     /**
      * @return whether any groups were merged
      */
-    // FIXME
     private fun MutableList<MutableList<EventLabel>>.mergeGroups(): Boolean {
         if (size <= 1) {
             return false
@@ -105,6 +104,9 @@ class EventLabelLayouter(
                     remove()
                     previous()
                     set(mergedGroup)
+                    if (hasNext()) {
+                        next()
+                    }
                 }
                 prevGroup = mergedGroup
                 hasMerged = true
