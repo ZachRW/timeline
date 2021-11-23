@@ -40,6 +40,16 @@ open class EventLabel(
     var location: DynamicPoint
         get() = bounds.location
         set(value) {
+            if (textStr == "Eternals") {
+                console.log(
+                    """
+                    Original: $location
+                    New:      $value
+                    """.trimIndent()
+                )
+                console.log(Throwable().stackTraceToString())
+            }
+
             enclosedText = createEnclosedText(value)
             stem = createStem()
         }

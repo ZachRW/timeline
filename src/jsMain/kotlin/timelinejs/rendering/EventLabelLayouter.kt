@@ -37,11 +37,9 @@ class EventLabelLayouter(
             val tooClose = eventLabelRow.getTooClose()
             do {
                 for (group in tooClose) {
-                    if (group.size > 1) {
-                        alignAndChangeRowsOfGroupEventLabels(group)
-                    }
+                    alignAndChangeRowsOfGroupEventLabels(group)
                 }
-            } while (tooClose.mergeGroups())
+            } while (tooClose.mergeOverlappingGroups())
         }
     }
 
@@ -70,26 +68,21 @@ class EventLabelLayouter(
                 eventLabelsWithStemError.any { (_, error) -> error > 0 }
             }
         ) {
-            val (maxErrorEventLabel, _) =
+            val (eventLabelToMove, _) =
                 eventLabelsWithStemError.maxByOrNull { (_, error) -> error }!!
-            with(maxErrorEventLabel) {
+//            val eventLabelToMove = group.last()
+            with(eventLabelToMove) {
                 moveToRow(row + row.sign)
             }
-            group -= maxErrorEventLabel
-            if (group.size > 1) {
-                alignGroup(group)
-            } else {
-                if (group.isEmpty()) error("group shouldn't be empty")
-                group[0].moveToDefaultX()
-                return
-            }
+            group -= eventLabelToMove
+            alignGroup(group)
         }
     }
 
     /**
      * @return whether any groups were merged
      */
-    private fun MutableList<MutableList<EventLabel>>.mergeGroups(): Boolean {
+    private fun MutableList<MutableList<EventLabel>>.mergeOverlappingGroups(): Boolean {
         if (size <= 1) {
             return false
         }
@@ -99,16 +92,7 @@ class EventLabelLayouter(
         var prevGroup = iterator.next()
         for (group in iterator) {
             if (prevGroup.last().expandedXOverlaps(group[0])) {
-                val mergedGroup = (prevGroup + group).toMutableList()
-                with(iterator) {
-                    remove()
-                    previous()
-                    set(mergedGroup)
-                    if (hasNext()) {
-                        next()
-                    }
-                }
-                prevGroup = mergedGroup
+                prevGroup = iterator.mergeGroups(group)
                 hasMerged = true
             } else {
                 prevGroup = group
@@ -116,6 +100,20 @@ class EventLabelLayouter(
         }
 
         return hasMerged
+    }
+
+    private fun MutableListIterator<MutableList<EventLabel>>.mergeGroups(currentGroup: List<EventLabel>):
+            MutableList<EventLabel> {
+        remove()
+        val prevGroup = previous()
+        val mergedGroup = (prevGroup + currentGroup).toMutableList()
+
+        set(mergedGroup)
+        if (hasNext()) {
+            next()
+        }
+
+        return mergedGroup
     }
 
     private fun EventLabel.moveToRow(newRow: Int) {
@@ -128,16 +126,24 @@ class EventLabelLayouter(
             rowEventLabels -= this
         }
 
-        eventLabelsByRow.getOrPut(newRow) { mutableListOf() } += this
+        val rowList = eventLabelsByRow.getOrPut(newRow) { mutableListOf() }
+        rowList += this
+        rowList.sortBy { it.date.getTime() }
         row = newRow
     }
 
-    private fun alignGroup(eventLabels: List<EventLabel>) {
-        val datePxs = eventLabels.map { view.dateToPx(it.date) }
+    private fun alignGroup(group: List<EventLabel>) {
+        if (group.isEmpty()) error("group shouldn't be empty")
+        if (group.size == 1) {
+            group[0].moveToDefaultX()
+            return
+        }
+
+        val datePxs = group.map { view.dateToPx(it.date) }
         val labelCenterPxs = mutableListOf(0.0)
 
-        var prevHalfWidth = eventLabels[0].bounds.width / 2
-        for (eventLabel in eventLabels.subList(1, eventLabels.size)) {
+        var prevHalfWidth = group[0].bounds.width / 2
+        for (eventLabel in group.subList(1, group.size)) {
             val halfWidth = eventLabel.bounds.width / 2
             labelCenterPxs += labelCenterPxs.last() + prevHalfWidth + halfWidth + EventLabel.PADDING
             prevHalfWidth = halfWidth
@@ -145,8 +151,8 @@ class EventLabelLayouter(
 
         val offset = Aligner(labelCenterPxs, datePxs).getOffset()
 
-        var eventLabelPx = offset - eventLabels[0].bounds.width / 2
-        for (eventLabel in eventLabels) {
+        var eventLabelPx = offset - group[0].bounds.width / 2
+        for (eventLabel in group) {
             eventLabel.location =
                 eventLabel.location.copy(xDate = view.pxToDate(eventLabelPx))
             eventLabelPx += eventLabel.bounds.width + EventLabel.PADDING
