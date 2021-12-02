@@ -1,17 +1,10 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.gradle.targets.js.webpack.KotlinWebpack
 
-val kotlinVersion = "1.5.30"
-val serializationVersion = "1.2.2"
-val ktorVersion = "1.6.3"
-val logbackVersion = "1.2.5"
-val kmongoVersion = "4.2.8"
-val reactWrappersVersion = "17.0.2-pre.240-kotlin-$kotlinVersion"
-
 plugins {
-    kotlin("multiplatform") version "1.5.30"
+    kotlin("multiplatform") version Versions.KOTLIN
     application
-    kotlin("plugin.serialization") version "1.5.30"
+    kotlin("plugin.serialization") version Versions.KOTLIN
 }
 
 group = "com.zachrobweig"
@@ -37,29 +30,29 @@ kotlin {
     sourceSets {
         val commonMain by getting {
             dependencies {
-                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
-                implementation("io.ktor:ktor-client-core:$ktorVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${Versions.KOTLINX_SERIALIZATION}")
+                implementation("io.ktor:ktor-client-core:${Versions.KTOR}")
             }
         }
 
         val jvmMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-serialization:$ktorVersion")
-                implementation("io.ktor:ktor-server-core:$ktorVersion")
-                implementation("io.ktor:ktor-server-netty:$ktorVersion")
-                implementation("ch.qos.logback:logback-classic:$logbackVersion")
-                implementation("org.litote.kmongo:kmongo-coroutine-serialization:$kmongoVersion")
+                implementation("io.ktor:ktor-serialization:${Versions.KTOR}")
+                implementation("io.ktor:ktor-server-core:${Versions.KTOR}")
+                implementation("io.ktor:ktor-server-netty:${Versions.KTOR}")
+                implementation("ch.qos.logback:logback-classic:${Versions.LOGBACK}")
+                implementation("org.litote.kmongo:kmongo-coroutine-serialization:${Versions.KMONGO}")
             }
         }
 
         val jsMain by getting {
             dependencies {
-                implementation("io.ktor:ktor-client-js:$ktorVersion")
-                implementation("io.ktor:ktor-client-json:$ktorVersion")
-                implementation("io.ktor:ktor-client-serialization:$ktorVersion")
+                implementation("io.ktor:ktor-client-js:${Versions.KTOR}")
+                implementation("io.ktor:ktor-client-json:${Versions.KTOR}")
+                implementation("io.ktor:ktor-client-serialization:${Versions.KTOR}")
 
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-react:$reactWrappersVersion")
-                implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:$reactWrappersVersion")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-react:${Versions.REACT_WRAPPERS}")
+                implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:${Versions.REACT_WRAPPERS}")
             }
         }
     }
