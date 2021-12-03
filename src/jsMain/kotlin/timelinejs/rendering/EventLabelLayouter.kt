@@ -4,7 +4,6 @@ import timelinejs.datastructure.OpenIntRange
 import timelinejs.datastructure.open
 import timelinejs.View
 import timelinejs.rendering.compound.renderable.EventLabel
-import kotlin.math.sign
 
 // debug flag
 var reposition = true
@@ -13,24 +12,20 @@ class EventLabelLayouter(
     eventLabels: List<EventLabel>,
     private val view: View
 ) {
-    private val eventLabels = eventLabels.sortedBy { it.location.xDate.getTime() }
-    private val eventLabelsByRow = mutableMapOf<Int, MutableList<EventLabel>>()
+    private val rowHandler: RowHandler
+
+    init {
+        val sortedEventLabels = eventLabels.sortedBy { it.location.xDate.getTime() }
+        rowHandler = RowHandler(sortedEventLabels)
+    }
 
     fun layout() {
-        resetRows()
-        putEventLabelsInAlternatingRows()
+        rowHandler.reset()
         positionEventLabels()
     }
 
-    private fun resetRows() {
-        eventLabelsByRow.clear()
-        for (eventLabel in eventLabels) {
-            eventLabel.row = 0
-        }
-    }
-
     private fun positionEventLabels() {
-        for ((_, eventLabelRow) in eventLabelsByRow) {
+        for (eventLabelRow in rowHandler.rows) {
             eventLabelRow.forEach { it.moveToDefaultX() }
             if (!reposition) continue // debug flag
 
@@ -40,15 +35,6 @@ class EventLabelLayouter(
                     alignAndChangeRowsOfGroupEventLabels(group)
                 }
             } while (tooClose.mergeOverlappingGroups())
-        }
-    }
-
-    private fun putEventLabelsInAlternatingRows() {
-        var top = true
-
-        for (eventLabel in eventLabels) {
-            eventLabel.moveToRow(if (top) 1 else -1)
-            top = !top
         }
     }
 
@@ -71,9 +57,7 @@ class EventLabelLayouter(
             val (eventLabelToMove, _) =
                 eventLabelsWithStemError.maxByOrNull { (_, error) -> error }!!
 //            val eventLabelToMove = group.last()
-            with(eventLabelToMove) {
-                moveToRow(row + row.sign)
-            }
+            rowHandler.moveEventLabelOutRow(eventLabelToMove)
             group -= eventLabelToMove
             alignGroup(group)
         }
@@ -114,22 +98,6 @@ class EventLabelLayouter(
         }
 
         return mergedGroup
-    }
-
-    private fun EventLabel.moveToRow(newRow: Int) {
-        if (newRow == 0) {
-            error("Row 0 does not exist")
-        }
-        if (row != 0) {
-            val rowEventLabels = eventLabelsByRow[row]
-                ?: error("eventLabelsByRow does not match eventLabel's row")
-            rowEventLabels -= this
-        }
-
-        val rowList = eventLabelsByRow.getOrPut(newRow) { mutableListOf() }
-        rowList += this
-        rowList.sortBy { it.date.getTime() }
-        row = newRow
     }
 
     private fun alignGroup(group: List<EventLabel>) {
