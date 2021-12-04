@@ -1,14 +1,11 @@
 package timelinejs.rendering.compound.renderable
 
 import timelinejs.*
-import timelinejs.datastructure.DynamicPoint
 import timelinejs.rendering.EventLabelLayouter
 import timelinejs.rendering.Renderable
 import timelinejs.rendering.Renderer
 import timelinejs.rendering.compound.DynamicRenderParent
-import timelinejs.rendering.compound.StaticRenderParent
 import timelinejs.rendering.compound.style.EventLabelStyle
-import kotlin.js.Date
 
 class DataRenderer(
     data: JsTimelineData,

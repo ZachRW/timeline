@@ -53,6 +53,7 @@ kotlin {
 
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react:${Versions.REACT_WRAPPERS}")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:${Versions.REACT_WRAPPERS}")
+                implementation(npm("collections", "5.1.11"))
             }
         }
     }

@@ -7,7 +7,6 @@ import timelinejs.rendering.Renderer
 import timelinejs.rendering.compound.DynamicRenderParent
 import timelinejs.rendering.simple.renderable.DynamicText
 import timelinejs.rendering.simple.renderable.RoundRectangle
-import timelinejs.rendering.simple.renderable.StaticText
 
 class EnclosedText(
     location: DynamicPoint,

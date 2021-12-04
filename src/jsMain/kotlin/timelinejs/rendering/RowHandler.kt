@@ -1,15 +1,18 @@
 package timelinejs.rendering
 
+import SortedArray
+import plusAssign
+import sortedArrayOf
 import timelinejs.rendering.compound.renderable.EventLabel
 import kotlin.math.abs
 import kotlin.math.sign
 
 class RowHandler(private val eventLabels: List<EventLabel>) {
-    private val mutableRows = mutableListOf<MutableList<EventLabel>>()
+    private val mutableRows = mutableListOf<SortedArray<EventLabel>>()
 
-    val rows get(): List<MutableList<EventLabel>> = mutableRows
+    val rows get(): List<SortedArray<EventLabel>> = mutableRows
 
-    operator fun get(row: Int): MutableList<EventLabel> {
+    operator fun get(row: Int): SortedArray<EventLabel> {
         val index = rowToIndex(row)
         if (index !in mutableRows.indices)
             error("Row $row does not exist")
@@ -38,9 +41,9 @@ class RowHandler(private val eventLabels: List<EventLabel>) {
         val rowList = if (index in mutableRows.indices) {
             mutableRows[index]
         } else {
-            val newRow = mutableListOf<EventLabel>()
+            val newRow = sortedArrayOfEventLabels()
             while (mutableRows.size < index) {
-                mutableRows += mutableListOf<EventLabel>()
+                mutableRows += sortedArrayOfEventLabels()
             }
             mutableRows += newRow
             newRow
@@ -56,5 +59,9 @@ class RowHandler(private val eventLabels: List<EventLabel>) {
         var index = (abs(row) - 1) * 2
         if (row < 0) index++
         return index
+    }
+
+    private fun sortedArrayOfEventLabels(): SortedArray<EventLabel> {
+        return sortedArrayOf { it.location.xDate.getTime() }
     }
 }

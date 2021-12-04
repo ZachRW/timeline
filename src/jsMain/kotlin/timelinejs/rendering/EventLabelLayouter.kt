@@ -54,9 +54,9 @@ class EventLabelLayouter(
                 eventLabelsWithStemError.any { (_, error) -> error > 0 }
             }
         ) {
-            val (eventLabelToMove, _) =
-                eventLabelsWithStemError.maxByOrNull { (_, error) -> error }!!
-//            val eventLabelToMove = group.last()
+//            val (eventLabelToMove, _) =
+//                eventLabelsWithStemError.maxByOrNull { (_, error) -> error }!!
+            val eventLabelToMove = group.last()
             rowHandler.moveEventLabelOutRow(eventLabelToMove)
             group -= eventLabelToMove
             alignGroup(group)
