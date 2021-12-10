@@ -5,4 +5,5 @@ object Versions {
     const val LOGBACK = "1.2.6"
     const val KMONGO = "4.4.0"
     const val REACT_WRAPPERS = "17.0.2-pre.274-kotlin-$KOTLIN"
+    const val COLLECTIONS_JS = "5.1.11"
 }

@@ -1,9 +1,11 @@
 package timelinejs.rendering
 
+import SortedArray
 import timelinejs.datastructure.OpenIntRange
 import timelinejs.datastructure.open
 import timelinejs.View
 import timelinejs.rendering.compound.renderable.EventLabel
+import toList
 
 // debug flag
 var reposition = true
@@ -26,7 +28,8 @@ class EventLabelLayouter(
 
     private fun positionEventLabels() {
         for (eventLabelRow in rowHandler.rows) {
-            eventLabelRow.forEach { it.moveToDefaultX() }
+
+            eventLabelRow.array.forEach { it.moveToDefaultX() }
             if (!reposition) continue // debug flag
 
             val tooClose = eventLabelRow.getTooClose()
@@ -127,17 +130,18 @@ class EventLabelLayouter(
         }
     }
 
-    private fun MutableList<EventLabel>.getTooClose(): MutableList<MutableList<EventLabel>> {
+    private fun SortedArray<EventLabel>.getTooClose(): MutableList<MutableList<EventLabel>> {
+        val eventLabels = toList()
         val tooClose = mutableListOf<MutableList<EventLabel>>()
 
-        if (isEmpty()) {
+        if (eventLabels.isEmpty()) {
             return tooClose
         }
 
         var groupStartIndex = 0
-        while (groupStartIndex < size) {
-            val groupEndIndex = getNextTooCloseGroup(groupStartIndex)
-            tooClose += subList(groupStartIndex, groupEndIndex).toMutableList()
+        while (groupStartIndex < eventLabels.size) {
+            val groupEndIndex = eventLabels.getNextTooCloseGroup(groupStartIndex)
+            tooClose += eventLabels.subList(groupStartIndex, groupEndIndex).toMutableList()
             groupStartIndex = groupEndIndex
         }
 

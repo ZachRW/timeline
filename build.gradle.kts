@@ -11,7 +11,6 @@ group = "com.zachrobweig"
 version = "1.0-SNAPSHOT"
 
 repositories {
-    maven("https://dl.bintray.com/kotlin/kotlin-eap")
     mavenCentral()
 }
 
@@ -53,7 +52,7 @@ kotlin {
 
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react:${Versions.REACT_WRAPPERS}")
                 implementation("org.jetbrains.kotlin-wrappers:kotlin-react-dom:${Versions.REACT_WRAPPERS}")
-                implementation(npm("collections", "5.1.11"))
+                implementation(npm("collections", Versions.COLLECTIONS_JS))
             }
         }
     }

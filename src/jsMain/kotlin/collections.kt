@@ -5,11 +5,17 @@ external class SortedArray<T>(
     equals: ((T, T) -> Boolean)?,
     compare: ((T, T) -> Int)?
 ) {
+    val array: Array<out T>
+
     fun add(value: T)
 }
 
 operator fun <T> SortedArray<T>.plusAssign(element: T) {
     add(element)
+}
+
+fun <T> SortedArray<T>.toList(): List<T> {
+    return array.toList()
 }
 
 inline fun <T, R : Comparable<R>> sortedArrayOf(
