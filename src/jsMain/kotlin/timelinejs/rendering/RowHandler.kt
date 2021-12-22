@@ -1,16 +1,18 @@
 package timelinejs.rendering
 
-import SortedArray
-import plusAssign
-import sortedArrayOf
 import timelinejs.rendering.compound.renderable.EventLabel
 import kotlin.math.abs
 import kotlin.math.sign
+import collectionsjs.*
 
 class RowHandler(private val eventLabels: List<EventLabel>) {
     private val mutableRows = mutableListOf<SortedArray<EventLabel>>()
 
     val rows get(): List<SortedArray<EventLabel>> = mutableRows
+
+    val rowsWithNum get() = rows.withIndex().associate { (index, sortedArray) ->
+        Pair(indexToRow(index), sortedArray)
+    }
 
     operator fun get(row: Int): SortedArray<EventLabel> {
         val index = rowToIndex(row)
@@ -59,6 +61,11 @@ class RowHandler(private val eventLabels: List<EventLabel>) {
         var index = (abs(row) - 1) * 2
         if (row < 0) index++
         return index
+    }
+
+    private fun indexToRow(index: Int): Int {
+        val sign = if (index % 2 == 0) 1 else -1
+        return (index / 2 + 1) * sign
     }
 
     private fun sortedArrayOfEventLabels(): SortedArray<EventLabel> {

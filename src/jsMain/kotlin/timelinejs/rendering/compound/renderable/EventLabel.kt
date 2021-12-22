@@ -8,8 +8,11 @@ import timelinejs.rendering.compound.style.EventLabelStyle
 import timelinejs.rendering.simple.renderable.DynamicLine
 import kotlin.js.Date
 
+// debug variable
+var debugEventLabels = arrayOf("Doctor Strange in the Multiverse of Madness", "Black Panther: Wakanda Forever")
+
 open class EventLabel(
-    private val textStr: String,
+    val textStr: String,
     val date: Date,
     private val dateAxisY: Double,
     private val style: EventLabelStyle,
@@ -40,14 +43,15 @@ open class EventLabel(
     var location: DynamicPoint
         get() = bounds.location
         set(value) {
-            if (textStr == "Eternals") {
-                console.log(
-                    """
-                    Original: $location
-                    New:      $value
-                    """.trimIndent()
-                )
-                console.log(Throwable().stackTraceToString())
+            // debug code
+            if (textStr in debugEventLabels) {
+                fun formatDouble(x: Double) =
+                    x.toInt().toString().padStart(4)
+
+                val startPx = formatDouble(view.dateToPx(location.xDate))
+                val endPx = formatDouble(view.dateToPx(value.xDate))
+                console.log("${"'$textStr'".padStart(45)}: $startPx -> $endPx")
+                console.log() // dummy statement for breakpoint
             }
 
             enclosedText = createEnclosedText(value)
@@ -82,6 +86,10 @@ open class EventLabel(
             renderer,
             view
         )
+    }
+
+    override fun toString(): String {
+        return textStr
     }
 
     companion object {

@@ -46,6 +46,7 @@ kotlin {
 
         val jsMain by getting {
             dependencies {
+                implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:${Versions.KOTLINX_COLLECTIONS_IMMUTABLE}")
                 implementation("io.ktor:ktor-client-js:${Versions.KTOR}")
                 implementation("io.ktor:ktor-client-json:${Versions.KTOR}")
                 implementation("io.ktor:ktor-client-serialization:${Versions.KTOR}")

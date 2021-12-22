@@ -1,3 +1,5 @@
+package collectionsjs
+
 @JsModule("collections/sorted-array")
 @JsNonModule
 external class SortedArray<T>(

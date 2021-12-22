@@ -1,13 +1,13 @@
 package timelinejs.rendering
 
-import SortedArray
 import timelinejs.datastructure.OpenIntRange
 import timelinejs.datastructure.open
 import timelinejs.View
 import timelinejs.rendering.compound.renderable.EventLabel
-import toList
+import collectionsjs.*
+import timelinejs.rendering.compound.renderable.debugEventLabels
 
-// debug flag
+// debug variable
 var reposition = true
 
 class EventLabelLayouter(
@@ -27,10 +27,13 @@ class EventLabelLayouter(
     }
 
     private fun positionEventLabels() {
-        for (eventLabelRow in rowHandler.rows) {
+        // FIXME using rowsWithNum instead of rows breaks stuff for some reason
+        for ((rowNum, eventLabelRow) in rowHandler.rowsWithNum) {
+            console.log("Positioning row $rowNum")
 
+            console.log("Centering event labels in row $rowNum on their event date")
             eventLabelRow.array.forEach { it.moveToDefaultX() }
-            if (!reposition) continue // debug flag
+            if (!reposition) continue // stop prematurely (only for debugging)
 
             val tooClose = eventLabelRow.getTooClose()
             do {
@@ -42,6 +45,9 @@ class EventLabelLayouter(
     }
 
     private fun EventLabel.moveToDefaultX() {
+        if (textStr in debugEventLabels) {
+            console.log("Centering '$textStr' on its event date")
+        }
         location = location.copy(
             xDate = view.datePlusPx(date, -bounds.width / 2)
         )
@@ -131,10 +137,12 @@ class EventLabelLayouter(
     }
 
     private fun SortedArray<EventLabel>.getTooClose(): MutableList<MutableList<EventLabel>> {
+        console.log("Grouping event labels in current row if they're too close")
         val eventLabels = toList()
         val tooClose = mutableListOf<MutableList<EventLabel>>()
 
         if (eventLabels.isEmpty()) {
+            console.log("This row is empty. Stop grouping.")
             return tooClose
         }
 
@@ -144,6 +152,8 @@ class EventLabelLayouter(
             tooClose += eventLabels.subList(groupStartIndex, groupEndIndex).toMutableList()
             groupStartIndex = groupEndIndex
         }
+        console.log("End of row. Groups:")
+        tooClose.forEach { console.log(it.toString()) }
 
         return tooClose
     }
@@ -158,12 +168,30 @@ class EventLabelLayouter(
         }
 
         var prevExpandedXRange = this[startIndex].getExpandedXRange()
+
+        var debugGroup = false
+        val startStr = this[startIndex].toString()
+        if (startStr in debugEventLabels) {
+            debugGroup = true
+            console.log("Group starts with '$startStr'")
+        }
+
         for ((index, eventLabel) in withIndex().drop(startIndex + 1)) {
             val expandedXRange = eventLabel.getExpandedXRange()
             if (!expandedXRange.overlaps(prevExpandedXRange)) {
+                if (debugGroup) {
+                    console.log("'${eventLabel}' is not close enough" +
+                            " to the previous label to be part of the group. Group ended.")
+                    console.log("Group: ${subList(startIndex, index + 1)}")
+                }
                 return index
             }
             prevExpandedXRange = expandedXRange
+            if (debugGroup) {
+                console.log("'${eventLabel.textStr}' is close enough to the previous" +
+                        " label to be added to the group")
+                console.log("The group is now ${subList(startIndex, index + 1)}")
+            }
         }
 
         return size
