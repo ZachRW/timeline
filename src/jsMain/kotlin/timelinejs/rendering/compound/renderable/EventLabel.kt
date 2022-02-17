@@ -23,17 +23,17 @@ open class EventLabel(
         createEnclosedText(DynamicPoint(date, 0.0, view))
     private var stem: DynamicLine = createStem()
 
-    open var row = 0
+    open var rowNum = 0
         set(value) {
             field = value
-            if (row == 0) return
+            if (rowNum == 0) return
 
-            val newY = if (row > 0) {
+            val newY = if (rowNum > 0) {
                 dateAxisY - MIN_DIST_FROM_AXIS - bounds.height -
-                        (bounds.height + PADDING) * (row - 1)
+                        (bounds.height + PADDING) * (rowNum - 1)
             } else {
                 dateAxisY + MIN_DIST_FROM_AXIS +
-                        (bounds.height + PADDING) * (-row - 1)
+                        (bounds.height + PADDING) * (-rowNum - 1)
             }
 
             location = location.copy(y = newY)

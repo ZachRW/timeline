@@ -6,18 +6,14 @@ import kotlin.math.sign
 import collectionsjs.*
 
 class RowHandler(private val eventLabels: List<EventLabel>) {
-    private val mutableRows = mutableListOf<SortedArray<EventLabel>>()
+    private val mutableRows = mutableListOf<Row>()
 
-    val rows get(): List<SortedArray<EventLabel>> = mutableRows
+    val rows get(): List<Row> = mutableRows
 
-    val rowsWithNum get() = rows.withIndex().associate { (index, sortedArray) ->
-        Pair(indexToRow(index), sortedArray)
-    }
-
-    operator fun get(row: Int): SortedArray<EventLabel> {
-        val index = rowToIndex(row)
+    operator fun get(rowNum: Int): Row {
+        val index = rowNumToIndex(rowNum)
         if (index !in mutableRows.indices)
-            error("Row $row does not exist")
+            error("Row $rowNum does not exist")
 
         return mutableRows[index]
     }
@@ -28,47 +24,49 @@ class RowHandler(private val eventLabels: List<EventLabel>) {
     }
 
     fun moveEventLabelOutRow(eventLabel: EventLabel) {
-        moveEventLabelToRow(eventLabel, eventLabel.row + eventLabel.row.sign)
+        moveEventLabelToRow(eventLabel, eventLabel.rowNum + eventLabel.rowNum.sign)
     }
 
     private fun putEventLabelsInAlternatingRows() {
         for ((index, eventLabel) in eventLabels.withIndex()) {
-            val row = if (index % 2 == 0) 1 else -1
-            moveEventLabelToRow(eventLabel, row)
+            val rowNum = if (index % 2 == 0) 1 else -1
+            moveEventLabelToRow(eventLabel, rowNum)
         }
     }
 
-    private fun moveEventLabelToRow(eventLabel: EventLabel, row: Int) {
-        val index = rowToIndex(row)
-        val rowList = if (index in mutableRows.indices) {
+    private fun moveEventLabelToRow(eventLabel: EventLabel, rowNum: Int) {
+        getOrAddRow(rowNum) += eventLabel
+        eventLabel.rowNum = rowNum
+    }
+
+    private fun getOrAddRow(rowNum: Int): Row {
+        val index = rowNumToIndex(rowNum)
+        return if (index in mutableRows.indices) {
             mutableRows[index]
         } else {
-            val newRow = sortedArrayOfEventLabels()
-            while (mutableRows.size < index) {
-                mutableRows += sortedArrayOfEventLabels()
-            }
-            mutableRows += newRow
-            newRow
+            addRow(rowNum, index)
         }
-
-        eventLabel.row = row
-        rowList += eventLabel
     }
 
-    private fun rowToIndex(row: Int): Int {
-        if (row == 0) error("Row must be non-zero")
+    private fun addRow(rowNum: Int, index: Int): Row {
+        val newRow = Row(rowNum)
+        for (fillerIndex in mutableRows.size until index) {
+            mutableRows += Row(indexToRowNum(fillerIndex))
+        }
+        mutableRows += newRow
+        return newRow
+    }
 
-        var index = (abs(row) - 1) * 2
-        if (row < 0) index++
+    private fun rowNumToIndex(rowNum: Int): Int {
+        if (rowNum == 0) error("rowNum must be non-zero")
+
+        var index = (abs(rowNum) - 1) * 2
+        if (rowNum < 0) index++
         return index
     }
 
-    private fun indexToRow(index: Int): Int {
+    private fun indexToRowNum(index: Int): Int {
         val sign = if (index % 2 == 0) 1 else -1
         return (index / 2 + 1) * sign
-    }
-
-    private fun sortedArrayOfEventLabels(): SortedArray<EventLabel> {
-        return sortedArrayOf { it.location.xDate.getTime() }
     }
 }

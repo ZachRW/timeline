@@ -2,22 +2,45 @@ package collectionsjs
 
 @JsModule("collections/sorted-array")
 @JsNonModule
-external class SortedArray<T>(
+private external class SortedArrayJs<T>(
     values: Array<out T>,
     equals: ((T, T) -> Boolean)?,
     compare: ((T, T) -> Int)?
 ) {
     val array: Array<out T>
+    val length: Int
 
     fun add(value: T)
 }
 
-operator fun <T> SortedArray<T>.plusAssign(element: T) {
-    add(element)
-}
+class SortedArray<T>(
+    equals: ((T, T) -> Boolean)?,
+    compare: ((T, T) -> Int)?
+) {
+    private val sortedArrayJs: SortedArrayJs<T> = SortedArrayJs(arrayOf(), equals, compare)
 
-fun <T> SortedArray<T>.toList(): List<T> {
-    return array.toList()
+    val size: Int
+        get() = sortedArrayJs.length
+
+    fun iterator(): Iterator<T> {
+        return sortedArrayJs.array.iterator()
+    }
+
+    fun add(element: T) {
+        sortedArrayJs.add(element)
+    }
+
+    operator fun plusAssign(element: T) {
+        add(element)
+    }
+
+    fun isEmpty(): Boolean {
+        return size == 0
+    }
+
+    fun mutableSlice(fromIndex: Int, toIndex: Int): MutableList<T> {
+        return sortedArrayJs.array.slice(fromIndex..toIndex).toMutableList()
+    }
 }
 
 inline fun <T, R : Comparable<R>> sortedArrayOf(
@@ -30,5 +53,5 @@ inline fun <T, R : Comparable<R>> sortedArrayOf(
         selector(a) == selector(b)
     }
 
-    return SortedArray(arrayOf(), equals, compare)
+    return SortedArray(equals, compare)
 }

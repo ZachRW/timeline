@@ -28,11 +28,11 @@ class EventLabelLayouter(
 
     private fun positionEventLabels() {
         // FIXME using rowsWithNum instead of rows breaks stuff for some reason
-        for ((rowNum, eventLabelRow) in rowHandler.rowsWithNum) {
-            console.log("Positioning row $rowNum")
-
-            console.log("Centering event labels in row $rowNum on their event date")
-            eventLabelRow.array.forEach { it.moveToDefaultX() }
+        for (row in rowHandler.rows) {
+//            console.log("Positioning row $rowNum")
+//
+//            console.log("Centering event labels in row $rowNum on their event date")
+            row.forEach { it.moveToDefaultX() }
             if (!reposition) continue // stop prematurely (only for debugging)
 
             val tooClose = eventLabelRow.getTooClose()
@@ -136,20 +136,19 @@ class EventLabelLayouter(
         }
     }
 
-    private fun SortedArray<EventLabel>.getTooClose(): MutableList<MutableList<EventLabel>> {
+    private fun Row.getTooClose(): MutableList<MutableList<EventLabel>> {
         console.log("Grouping event labels in current row if they're too close")
-        val eventLabels = toList()
         val tooClose = mutableListOf<MutableList<EventLabel>>()
 
-        if (eventLabels.isEmpty()) {
+        if (isEmpty()) {
             console.log("This row is empty. Stop grouping.")
             return tooClose
         }
 
         var groupStartIndex = 0
-        while (groupStartIndex < eventLabels.size) {
-            val groupEndIndex = eventLabels.getNextTooCloseGroup(groupStartIndex)
-            tooClose += eventLabels.subList(groupStartIndex, groupEndIndex).toMutableList()
+        while (groupStartIndex < size) {
+            val groupEndIndex = getNextTooCloseGroup(groupStartIndex)
+            tooClose += mutableSlice(groupStartIndex, groupEndIndex)
             groupStartIndex = groupEndIndex
         }
         console.log("End of row. Groups:")
@@ -162,7 +161,7 @@ class EventLabelLayouter(
      * @param startIndex the first index of the group (inclusive).
      * @return the last index of the group (exclusive).
      */
-    private fun List<EventLabel>.getNextTooCloseGroup(startIndex: Int): Int {
+    private fun Row.getNextTooCloseGroup(startIndex: Int): Int {
         if (startIndex >= lastIndex) {
             return size
         }
